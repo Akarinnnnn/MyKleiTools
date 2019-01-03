@@ -4,9 +4,12 @@
 #include "pch.h"
 #include <iostream>
 
+
+#include "ImageOpreration.h"
+
 int wmain(int argc,wchar_t* argv[])
 {
-    
+	ImageOperation::ExportImage(L"C:\\Users\\12072\\Pictures\\偷来的喷漆\\已转换\\096d9f87.png");
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单

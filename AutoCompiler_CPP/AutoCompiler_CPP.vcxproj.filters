@@ -21,43 +21,7 @@
     <ClInclude Include="ImageOpreration.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="PVRTArray.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTDecompress.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTError.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTexture.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTextureDefines.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTextureFormat.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTextureHeader.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTextureUtilities.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTextureVersion.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTGlobal.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTMap.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTString.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PVRTTexture.h">
+    <ClInclude Include="TEXFileOperation.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,10 +35,14 @@
     <ClCompile Include="ImageOpreration.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="TEXFileOperation.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ispowerof2.asm">
       <Filter>源文件</Filter>
     </None>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>

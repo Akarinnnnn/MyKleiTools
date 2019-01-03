@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>E:\Visual Studio项目\AutoCompiler_CPP\AutoCompiler_CPP;$(LibraryPath)</LibraryPath>
+    <LibraryPath>E:\Visual Studio项目\AutoCompiler_CPP\AutoCompiler_CPP\ExternalLibrary;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -154,19 +154,7 @@
   <ItemGroup>
     <ClInclude Include="ImageOpreration.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="PVRTArray.h" />
-    <ClInclude Include="PVRTDecompress.h" />
-    <ClInclude Include="PVRTError.h" />
-    <ClInclude Include="PVRTexture.h" />
-    <ClInclude Include="PVRTextureDefines.h" />
-    <ClInclude Include="PVRTextureFormat.h" />
-    <ClInclude Include="PVRTextureHeader.h" />
-    <ClInclude Include="PVRTextureUtilities.h" />
-    <ClInclude Include="PVRTextureVersion.h" />
-    <ClInclude Include="PVRTGlobal.h" />
-    <ClInclude Include="PVRTMap.h" />
-    <ClInclude Include="PVRTString.h" />
-    <ClInclude Include="PVRTTexture.h" />
+    <ClInclude Include="TEXFileOperation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoCompiler_CPP.cpp" />
@@ -177,9 +165,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TEXFileOperation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ispowerof2.asm" />
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
