@@ -45,4 +45,7 @@
     </None>
     <None Include="README.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\12072\Pictures\KTEX_HEADER.bmp" />
+  </ItemGroup>
 </Project>

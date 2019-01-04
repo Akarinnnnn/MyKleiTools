@@ -171,6 +171,9 @@
     <None Include="ispowerof2.asm" />
     <None Include="README.md" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\12072\Pictures\KTEX_HEADER.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

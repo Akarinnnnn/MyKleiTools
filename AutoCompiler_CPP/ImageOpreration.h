@@ -1,12 +1,16 @@
 #pragma once
-
+#include <string>
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <exception>
 namespace ImageOperation
 { 
-	bool ExportImage(std::wstring InputFileName);
-	bool Convert(std::wstring sourcefile,std::wstring destfile);
-}
-namespace ImageOperation_2//With stdexception
-{ 
-	bool ExportImage(std::wstring InputFileName);
+	struct PNGsize
+	{
+		unsigned int width;
+		unsigned int height;
+	};
+	bool ExportImage(std::wstring InputFileName,PNGsize& ret);
 	bool Convert(std::wstring sourcefile,std::wstring destfile);
 }

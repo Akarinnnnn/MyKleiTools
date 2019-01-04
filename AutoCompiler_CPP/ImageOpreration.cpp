@@ -1,11 +1,5 @@
 #include "pch.h"
 
-#include <string>
-#include <fstream>
-#include <iostream>
-#include <iomanip>
-#include <exception>
-
 #include "basetsd.h"//exists in VC++
 
 #include "ImageOpreration.h"
@@ -19,18 +13,19 @@ using namespace std;
 namespace ImageOperation
 {
 	bool ExportImage(
-		std::wstring InputPNGName//png only
+		std::wstring InputPNGName,//png only
+		PNGsize& ret
 	)
 	{
-		wifstream InputFile(InputPNGName, ios::binary);
+		ifstream InputFile(InputPNGName, ios::binary);
 		if (!InputFile.good())
 		{
 			wcout << L"文件损坏" << endl;
 			return false;
 		}
 		UINT64 inputHeader;
-		InputFile.read((wchar_t*)&inputHeader, 4);
-		if (inputHeader == PNG_HEADER)
+		InputFile.read((char*)(&inputHeader), 8);
+		if (inputHeader != PNG_HEADER)
 		{
 			wcout << L"不是PNG文件头" << endl;
 			return false;
@@ -39,21 +34,26 @@ namespace ImageOperation
 		UINT32 Width = 0;
 		UINT32 Height = 0;
 
-		InputFile.read((wchar_t*)&Width, 2);
+		InputFile.read((char*)(&Width), 4);
 		InputFile.seekg(2, ios::cur);
-		InputFile.read((wchar_t*)&Height, 2);
+		InputFile.read((char*)(&Height), 4);
 
-		if (!(Width - 1 & Width) && (Height - 1 & Height)/*&&(Width==Height)*/)
+		if (!(Width - 1 & Width) && (Height - 1 & Height))//is power of 2
 		{
-			wcout << L"长、宽不是2的整数次幂，没法处理" << endl;
+			wcout << L"长、宽不是2的整数次幂" << endl;
 			return false;
 		}
 		//TODO: Convert Code
+		ret.height = Height;
+		ret.width = Width;
 		return true;
 	}
 
 	bool Convert(std::wstring sourcefile, std::wstring destfile)
 	{
+		bool generatemipmaps = false;
+		bool premutiplyalpha = false;
+
 		return false;
 	}
 }
