@@ -48,14 +48,6 @@ namespace ImageOperation
 		ret.width = Width;
 		return true;
 	}
-
-	bool Convert(std::wstring sourcefile, std::wstring destfile)
-	{
-		bool generatemipmaps = false;
-		bool premutiplyalpha = false;
-
-		return false;
-	}
 }
 
 

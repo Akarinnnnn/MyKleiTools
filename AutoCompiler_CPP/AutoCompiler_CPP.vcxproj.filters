@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="源文件\lodepng">
+      <UniqueIdentifier>{397defe6-9aee-49f9-9dd8-9b6338aa4e2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\lodepng">
+      <UniqueIdentifier>{9020cfe6-d420-4773-aa54-4049e3c5c558}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -23,6 +29,9 @@
     </ClInclude>
     <ClInclude Include="TEXFileOperation.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="lodepng.h">
+      <Filter>头文件\lodepng</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -38,12 +47,21 @@
     <ClCompile Include="TEXFileOperation.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="example.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng.cpp">
+      <Filter>源文件\lodepng</Filter>
+    </ClCompile>
+    <ClCompile Include="lodepng_util.cpp">
+      <Filter>源文件\lodepng</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ispowerof2.asm">
       <Filter>源文件</Filter>
     </None>
-    <None Include="README.md" />
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="C:\Users\12072\Pictures\KTEX_HEADER.bmp" />

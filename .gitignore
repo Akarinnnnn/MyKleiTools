@@ -261,3 +261,11 @@ __pycache__/
 *.pyc
 /refer
 /CodeTest
+/输出-生成.txt
+/AutoCompiler_CPP/pngdetail.cpp
+/AutoCompiler_CPP/lodepng_util.h
+/AutoCompiler_CPP/lodepng_util.cpp
+/AutoCompiler_CPP/lodepng_unittest.cpp
+/AutoCompiler_CPP/lodepng_benchmark.cpp
+/AutoCompiler_CPP/lodepng.h
+/AutoCompiler_CPP/lodepng.cpp

@@ -107,6 +107,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,12 +154,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ImageOpreration.h" />
+    <ClInclude Include="lodepng.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="TEXFileOperation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoCompiler_CPP.cpp" />
+    <ClCompile Include="example.c" />
     <ClCompile Include="ImageOpreration.cpp" />
+    <ClCompile Include="lodepng.cpp" />
+    <ClCompile Include="lodepng_util.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -168,8 +173,8 @@
     <ClCompile Include="TEXFileOperation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="ispowerof2.asm" />
-    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="C:\Users\12072\Pictures\KTEX_HEADER.bmp" />
