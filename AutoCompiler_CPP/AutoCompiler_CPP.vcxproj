@@ -75,13 +75,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>E:\Visual Studio项目\AutoCompiler_CPP\AutoCompiler_CPP\ExternalLibrary;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)ExternalLibrary\;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)squish\;$(ProjectDir)lodepng\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)squish\;$(ProjectDir)lodepng\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)ExternalLibrary\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,6 +115,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ShowProgress>NotSet</ShowProgress>
+      <AdditionalDependencies>$(ProjectDir)ExternalLibrary\squishd.lib;$(ProjectDir)ExternalLibrary\squish.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -135,7 +140,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -149,21 +154,19 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ImageOpreration.h" />
-    <ClInclude Include="lodepng.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="TEXFileOperation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoCompiler_CPP.cpp" />
-    <ClCompile Include="example.c" />
-    <ClCompile Include="ImageOpreration.cpp" />
-    <ClCompile Include="lodepng.cpp" />
-    <ClCompile Include="lodepng_util.cpp" />
+    <ClCompile Include="lodepng\lodepng.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -173,7 +176,6 @@
     <ClCompile Include="TEXFileOperation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="ispowerof2.asm" />
   </ItemGroup>
   <ItemGroup>

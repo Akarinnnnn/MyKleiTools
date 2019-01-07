@@ -4,21 +4,21 @@
 #include "pch.h"
 #include <iostream>
 
-
-
-#include "ImageOpreration.h"
 #include "TEXFileOperation.h"
 
 using namespace std;
 using namespace KTEXFileOperation;
-using namespace ImageOperation;
 
-int wmain(int argc,wchar_t* argv[])
+
+int main(int argc,char* argv[])
 {
-	wstring filename;
-	wcin >> filename;//不能有中文，原理不明
-	KTEXFile tex_1(filename);
-	//ExportImage(filename);
+	string filename;
+
+	cout << "输入文件名:" << endl;
+	cin >> filename;
+	
+	KTEXFile tex(filename);
+	
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
