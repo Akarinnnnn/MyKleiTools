@@ -4,22 +4,55 @@
 #include "pch.h"
 #include <iostream>
 
+//#define KTEXEXCEPTION
 #include "TEXFileOperation.h"
 
 using namespace std;
 using namespace KTEXFileOperation;
 
 
+int main(int argc, char* argv[])
+{
+	MACROSETLOCALE; //CodePage:936
+	string input;
+	KTEXFile ktex;
+	cout << "input:" << endl;
+	cin >> input;
+	cout << "output:" << endl;
+	cin >> ktex.output;
+	ktex.LoadPNG(input);
+	ktex.ConvertFromPNG();
+}
+
+
+/*
 int main(int argc,char* argv[])
 {
-	string filename;
+	//string filename;
 
-	cout << "输入文件名:" << endl;
-	cin >> filename;
+	//cout << "输入文件名:" << endl;
+	//cin >> filename;
 	
-	KTEXFile tex(filename);
+	//KTEXFile tex(filename);
+	unsigned int a = 0x12345678;
+	unsigned int b = 0;
+	char c[4] = { 0x12,0x34,0x56,0x78 };
+	char d[4]{ 0 };
+	for (char i = 0; i < 4; i++)
+	{
+		*((char*)(&b) + i) = *(c + i);//AMD64机 小端字节序
+		//顺序：
+		//b 00 00 00 00
+		//b 00 00 00 12
+		//b 00 00 34 12
+		//b 00 56 34 12
+		//b 78 56 34 12
+		*(d + i) = *(c + i);
+	}
+	for (char i = 0; i < 4; i++)
+	*((char*)(&b)+i)=*((char*)(&a)+i);
 	
-}
+}*/
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
 // 调试程序: F5 或调试 >“开始调试”菜单

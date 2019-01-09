@@ -29,13 +29,13 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="AutoCompiler_CPP.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="TEXFileOperation.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="lodepng\lodepng.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MAIN.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -43,8 +43,5 @@
     <None Include="ispowerof2.asm">
       <Filter>源文件</Filter>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="C:\Users\12072\Pictures\KTEX_HEADER.bmp" />
   </ItemGroup>
 </Project>

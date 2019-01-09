@@ -5,12 +5,40 @@
 #include <list>
 #include <vector>
 #include <iostream>
+#include <exception>
+#include <filesystem>
 #include "lodepng.h"
 #include "squish.h"
 
+#ifdef KTEXEXCEPTION
+#define _FAIL throw KTEXexception("读取失败")//throw 
+#define _BAD throw KTEXexception("文件损坏")
+#define _NOT_OPEN throw KTEXFileOperation("打开失败")
+#else
+#define _FAIL return false;
+#define _BAD return false
+#define _NOT_OPEN return false
+#endif
 
 namespace KTEXFileOperation
-{ 
+{
+	class KTEXexception : std::exception
+	{
+	public:
+		KTEXexception() noexcept;
+		KTEXexception(char* MSG);
+		~KTEXexception() noexcept;
+		const char* what() noexcept;
+		KTEXexception& operator=(KTEXexception);
+	private:
+		struct 
+		{
+			char const* data;
+			bool dofree;
+		}data;
+
+	};
+	
 	struct  //platform
 	{
 		char pc = 12;
@@ -69,14 +97,13 @@ namespace KTEXFileOperation
 			*B;
 	};
 
+	void ReverseByByte(char* p, UINT64 bytecount);
 	class KTEXFile
 	{
 	public:
-
-		bool ConvertFromPNG(uc_vector inputvec);//Warning: This function will clear fsTEX
-		
-
-		KTEXFile(std::string InputFileName);
+		bool ConvertFromPNG();
+		int LoadPNG(std::string InputPngFileName);//使用lodepng 
+		KTEXFile(std::string InputKtexFileName);//加载 KTEX
 		KTEXFile();
 		~KTEXFile();
 
@@ -88,8 +115,7 @@ namespace KTEXFileOperation
 		uc_vector vecPNG;
 		_mipmap mipmap;
 	};
-	void movepixel(PNGPIXEL& p);
-	void movepixel(PNGPIXEL& p,int count);
+
 }
 
 

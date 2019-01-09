@@ -10,5 +10,10 @@
 #define PCH_H
 
 // TODO: 添加要在此处预编译的标头
+#ifdef _WIN32
+#define MACROSETLOCALE setlocale(LC_ALL, "Chinese_People's Republic of China.936")
+#else
+#define MSETLOCALE setlocale(LC_ALL, "zh_CN.GBK")
+#endif
 
 #endif //PCH_H
