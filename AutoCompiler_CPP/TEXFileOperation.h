@@ -1,28 +1,27 @@
 #pragma once
-#include "basetsd.h"
 #include <string>
 #include <fstream>
-#include <list>
 #include <vector>
 #include <iostream>
 #include <exception>
-#include <filesystem>
 #include "lodepng.h"
 #include "squish.h"
-
-#ifdef KTEXEXCEPTION
-#define _FAIL throw KTEXexception("读取失败")//throw 
-#define _BAD throw KTEXexception("文件损坏")
-#define _NOT_OPEN throw KTEXFileOperation("打开失败")
+//#include <filesystem>
+#ifdef KTEXEXCEPTION //要处理异常就定义这个
+#define _FAIL throw std::runtime_error("读取失败")
+#define _BAD throw std::runtime_error("文件损坏")
+#define _NOT_OPEN throw std::runtime_error("打开失败")
+#define _WH_OUT_OF_RANGE throw std::out_of_range("图片宽/高超过65535")
 #else
 #define _FAIL return false;
 #define _BAD return false
 #define _NOT_OPEN return false
+#define _WH_OUT_OF_RANGE return false
 #endif
 
 namespace KTEXFileOperation
 {
-	class KTEXexception : std::exception
+	class KTEXexception : std::exception//不用这个了，水平太差
 	{
 	public:
 		KTEXexception() noexcept;
@@ -67,7 +66,7 @@ namespace KTEXFileOperation
 		const char ktexheader[4] = { 0x4B,0x54,0x45,0x58 };//文件头,"KTEX",用ACSII值表示
 		//数据
 		unsigned int flags = 0;
-		unsigned int mipscount = 0;
+		unsigned int mips = 0;
 		unsigned int texturetype = (unsigned int)textyp.d2;
 		unsigned int pixelformat = (unsigned int)pixfrm.DXT3;
 		unsigned int platform = (unsigned int)platfrm.pc;
@@ -82,41 +81,29 @@ namespace KTEXFileOperation
 
 	struct _mipmap
 	{
-		unsigned short width;//X axis
-		unsigned short height;//Y axis
-		unsigned short Z=0;
-		std::iostream* data;
+		unsigned short width;
+		unsigned short height;
+		unsigned short Z=0;//Z Axis
+		void* pdata;
 	};
 
-	struct PNGPIXEL//a,r,g,b
-	{
-		unsigned char
-			*A,
-			*R,
-			*G,
-			*B;
-	};
-
-	void ReverseByByte(char* p, UINT64 bytecount);
+	
 	class KTEXFile
 	{
 	public:
 		bool ConvertFromPNG();
 		int LoadPNG(std::string InputPngFileName);//使用lodepng 
-		KTEXFile(std::string InputKtexFileName);//加载 KTEX
+		//KTEXFile(std::string InputKtexFileName);//加载 KTEX,没弄好
 		KTEXFile();
 		~KTEXFile();
-
-		std::string output;
+		std::string output;//输出文件位置
 	private:
 		void KTEXFirstBlockGen();
 		std::fstream fsTEX;
 		KTEXHeader Header;
+		_mipmap* pMipmap;//为多mipmap做准备，重构工作量有点大
 		uc_vector vecPNG;
 		_mipmap mipmap;
 	};
 
 }
-
-
-

@@ -2,10 +2,10 @@
 #include "TEXFileOperation.h"
 
 template<typename T>
-inline bool ArrayCompare(T array1[4], const T array2[4], UINT64 count)
+inline bool ArrayCompare(T array1[4], const T array2[4], unsigned long long count)
 {
 	//UINT64 p1,p2 =(UINT64*)array1,(UINT64*)array2
-	for (UINT64 i = 0; i < count; i++)
+	for (unsigned long long i = 0; i < count; i++)
 	{
 		if (*(array1 + i) != *(array2 + i))
 		{
@@ -15,7 +15,7 @@ inline bool ArrayCompare(T array1[4], const T array2[4], UINT64 count)
 	return true;
 }
 
-void KTEXFileOperation::ReverseByByte(char* p, UINT64 bytecount)//p’‚∏ˆ«ø÷∆◊™ªªæÕ––
+char* ReverseByByte(char* p, unsigned long long bytecount)//p«ø÷∆◊™ªªæÕ––
 {
 	char mid = 0;
 	for (unsigned long long i = 0; i < (bytecount / 2); i++)
@@ -24,6 +24,7 @@ void KTEXFileOperation::ReverseByByte(char* p, UINT64 bytecount)//p’‚∏ˆ«ø÷∆◊™ªªæ
 		*(p + (bytecount - i - 1)) = *(p + i);
 		*(p + i) = mid;
 	}
+	return p;
 }
 
 using namespace std;
@@ -33,7 +34,7 @@ KTEXFileOperation::KTEXFile::KTEXFile()
 	
 }
 
-KTEXFileOperation::KTEXFile::KTEXFile(string InputFileName)
+/*KTEXFileOperation::KTEXFile::KTEXFile(string InputFileName)
 {
 	fsTEX.open(InputFileName, ios::in | ios::out | ios::binary);
 	cout << "KETXFileOperation::KTEXFile::KTEXFile ‘ÿ»Î" << InputFileName << endl;
@@ -76,27 +77,28 @@ KTEXFileOperation::KTEXFile::KTEXFile(string InputFileName)
 	else
 		failure:
 		cout << "KTEXFileOperation::KTEXFile " << InputFileName << "  ß∞‹";
-}//≤ªΩ®“È”√
+}//≤ªΩ®“È”√*/
 KTEXFileOperation::KTEXFile::~KTEXFile()
 {
 	fsTEX.close();
+	delete[] mipmap.pdata;
 }
 
 inline void KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 {
-	constexpr unsigned int head = 0x4B544558;
+	constexpr unsigned int head = 0x5845544B;
 
 	KTEXHeader tempHeader = this->Header;
 
 	tempHeader.platform = head & 0xF;
 	tempHeader.pixelformat = (head >> 4) & 0x1F;
 	tempHeader.texturetype = (head >> 9) & 0xF;
-	tempHeader.mipscount = (head >> 13) & 0x1F;
+	tempHeader.mips = (head >> 13) & 0x1F;
 	tempHeader.flags = (head >> 18) & 3;
 	//tempHeader.remainder = (head >> 20) & 0xFFF;
 
 	tempHeader.flags <<= 18;
-	tempHeader.mipscount <<= 13;
+	tempHeader.mips <<= 13;
 	tempHeader.texturetype <<= 9;
 	tempHeader.pixelformat <<= 4;
 	//tempHeader.platform<<=0;
@@ -106,62 +108,84 @@ inline void KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 		Header.firstblock |= *(p+i);
 }
 
+
+
 bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 {
 	using namespace lodepng;
-	namespace fs = std::filesystem;
+	//namespace fs = std::filesystem;
 	uc_vector image;//RGBA
-	uc_vector ret;
 	State imgstate;
 	unsigned int wide, height;
 	decode(image, wide, height, imgstate, this->vecPNG);
 
-	unsigned char* imgdata=nullptr;
-	unsigned char* retdata=nullptr;
-	
-	ret.resize(wide*height*4);
-	
-	imgdata = image.data();
-	retdata = ret.data();
+	if (wide > USHRT_MAX || height > USHRT_MAX)
+	{
+		_WH_OUT_OF_RANGE;
+	}
 
+	unsigned char* imgdata=nullptr;
+
+	imgdata = image.data();
+	
 	ofstream ofstex(output,ios::binary|ios::trunc);
 	if(!ofstex.is_open())
 		_NOT_OPEN;
 
-	KTEXFirstBlockGen();//…˙≥…µƒµ⁄“ª ˝æ›øÈø…ƒ‹”–Œ Ã‚£¨“≤–Ì «À„∑®≤ª∂‘
+	KTEXFirstBlockGen();
 
 	ofstex.write("KTEX", 4);
-	ofstex.write((char*)(&(Header.firstblock)), 4);//–°∂À◊÷Ω⁄–Ú
+	ofstex.write((char*)(&Header.firstblock), 4);//–°∂À◊÷Ω⁄–Ú
 	
-	//Œƒº˛ªπ»±“ª∏ˆmipmap
+	//µ•mipmap,œÎ¡ÀœÎgeiª≈∫√œÒ”√≤ªµΩ“ª∏ˆ“‘…œµƒmipmap
 
-	switch(Header.pixelformat)//œÒÀÿ∏Ò Ω
+	mipmap = { (unsigned short)wide,(unsigned short)height,0 };
+
+	//–¥»Îmipmap–≈œ¢
+	ofstex.write((char*)(&mipmap.width), 2);
+	ofstex.write((char*)(&mipmap.height), 2);
+	ofstex.write((char*)(&mipmap.Z), 2);
+
+	
+	switch(Header.pixelformat)//œÒÀÿ∏Ò Ω≈–∂œ£¨—πÀı£¨–¥»Îmipmap ˝æ›
 	{ 
+		using namespace squish;
+		int blockcount = 0;
+
 		case (pixfrm.ARGB):
-			ofstex.write((char*)image.data(), wide*height);
+			mipmap.pdata = (char*)imgdata;
+			ofstex.write((char*)mipmap.pdata, wide*height*4);
 			break;
+
 		case (pixfrm.DXT1):
-			squish::CompressImage(imgdata, wide, height, retdata, squish::kDxt1);
-			ofstex.write((char*)ret.data(), wide*height);
+			blockcount = GetStorageRequirements(wide, height, kDxt1);
+			mipmap.pdata = new char[blockcount];
+			Compress(image.data(), mipmap.pdata, kDxt1);
+			ofstex.write((char*)mipmap.pdata, blockcount);
 			break;
+
 		case (pixfrm.DXT3):
-			squish::CompressImage(imgdata, wide, height, retdata, squish::kDxt3);
-			ofstex.write((char*)ret.data(), wide*height);
+			blockcount = GetStorageRequirements(wide, height, kDxt3);
+			mipmap.pdata = new unsigned short[blockcount];
+			Compress(image.data(), mipmap.pdata, kDxt3);
+			ofstex.write((char*)mipmap.pdata, blockcount*2);
 			break;
+
 		case (pixfrm.DXT5):
-			squish::CompressImage(imgdata, wide, height, retdata, squish::kDxt5);
-			ofstex.write((char*)ret.data(), wide*height);
+			blockcount = GetStorageRequirements(wide, height, kDxt5);
+			mipmap.pdata = new unsigned short[blockcount];
+			Compress(image.data(), mipmap.pdata, kDxt5);
+			ofstex.write((char*)mipmap.pdata, blockcount*2);
 			break;
 	}
-
-	//fsTEX.
+	
+	
 	ofstex.close();
 	return true;
 }
 
 int __fastcall KTEXFileOperation::KTEXFile::LoadPNG(std::string Input)
 {
-	
 	return lodepng::load_file(this->vecPNG, Input);
 }
 
@@ -186,7 +210,6 @@ const char * KTEXFileOperation::KTEXexception::what()noexcept
 
 KTEXFileOperation::KTEXexception & KTEXFileOperation::KTEXexception::operator=(KTEXexception a)
 {
-	// TODO: ‘⁄¥À¥¶≤Â»Î return ”Ôæ‰
 	if (this == &a)
 	{
 		return *this;

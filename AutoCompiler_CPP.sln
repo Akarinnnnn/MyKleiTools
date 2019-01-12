@@ -3,16 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AutoCompiler_CPP", "AutoCompiler_CPP\AutoCompiler_CPP.vcxproj", "{F1A6A308-F9D0-4078-904B-93C6E9684671}"
-	ProjectSection(ProjectDependencies) = postProject
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1} = {6A8518C3-D81A-4428-BD7F-C37933088AC1}
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MyPng", "AutoCompiler_CPP\AutoCompiler_CPP.vcxproj", "{F1A6A308-F9D0-4078-904B-93C6E9684671}"
 EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "refer", "refer\refer.pyproj", "{F25D2283-4413-4A6C-9D09-CBF6B262C068}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CodeTest", "CodeTest\CodeTest.vcxproj", "{505655DF-5873-4877-AF00-33B901C8910D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "squish", "..\squish\vs9\squish\squish.vcxproj", "{6A8518C3-D81A-4428-BD7F-C37933088AC1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AutoPNG_win32", "AutoPNG_win32\AutoPNG_win32.vcxproj", "{6157E640-5758-4192-904E-638D419BD863}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,26 +35,16 @@ Global
 		{F25D2283-4413-4A6C-9D09-CBF6B262C068}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F25D2283-4413-4A6C-9D09-CBF6B262C068}.Release|x64.ActiveCfg = Debug|Any CPU
 		{F25D2283-4413-4A6C-9D09-CBF6B262C068}.Release|x86.ActiveCfg = Release|Any CPU
-		{505655DF-5873-4877-AF00-33B901C8910D}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{505655DF-5873-4877-AF00-33B901C8910D}.Debug|x64.ActiveCfg = Debug|x64
-		{505655DF-5873-4877-AF00-33B901C8910D}.Debug|x64.Build.0 = Debug|x64
-		{505655DF-5873-4877-AF00-33B901C8910D}.Debug|x86.ActiveCfg = Debug|Win32
-		{505655DF-5873-4877-AF00-33B901C8910D}.Debug|x86.Build.0 = Debug|Win32
-		{505655DF-5873-4877-AF00-33B901C8910D}.Release|Any CPU.ActiveCfg = Release|Win32
-		{505655DF-5873-4877-AF00-33B901C8910D}.Release|x64.ActiveCfg = Debug|x64
-		{505655DF-5873-4877-AF00-33B901C8910D}.Release|x64.Build.0 = Debug|x64
-		{505655DF-5873-4877-AF00-33B901C8910D}.Release|x86.ActiveCfg = Release|Win32
-		{505655DF-5873-4877-AF00-33B901C8910D}.Release|x86.Build.0 = Release|Win32
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug|x64.ActiveCfg = Debug|x64
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug|x64.Build.0 = Debug|x64
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug|x86.ActiveCfg = Debug|Win32
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Debug|x86.Build.0 = Debug|Win32
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release|Any CPU.ActiveCfg = Release|Win32
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release|x64.ActiveCfg = Debug|x64
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release|x64.Build.0 = Debug|x64
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release|x86.ActiveCfg = Release|Win32
-		{6A8518C3-D81A-4428-BD7F-C37933088AC1}.Release|x86.Build.0 = Release|Win32
+		{6157E640-5758-4192-904E-638D419BD863}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{6157E640-5758-4192-904E-638D419BD863}.Debug|x64.ActiveCfg = Debug|x64
+		{6157E640-5758-4192-904E-638D419BD863}.Debug|x64.Build.0 = Debug|x64
+		{6157E640-5758-4192-904E-638D419BD863}.Debug|x86.ActiveCfg = Debug|Win32
+		{6157E640-5758-4192-904E-638D419BD863}.Debug|x86.Build.0 = Debug|Win32
+		{6157E640-5758-4192-904E-638D419BD863}.Release|Any CPU.ActiveCfg = Release|Win32
+		{6157E640-5758-4192-904E-638D419BD863}.Release|x64.ActiveCfg = Release|x64
+		{6157E640-5758-4192-904E-638D419BD863}.Release|x64.Build.0 = Release|x64
+		{6157E640-5758-4192-904E-638D419BD863}.Release|x86.ActiveCfg = Release|Win32
+		{6157E640-5758-4192-904E-638D419BD863}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

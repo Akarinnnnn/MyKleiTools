@@ -3,6 +3,7 @@
 
 #include "pch.h"
 #include <iostream>
+#include <filesystem>
 
 //#define KTEXEXCEPTION
 #include "TEXFileOperation.h"
@@ -13,15 +14,21 @@ using namespace KTEXFileOperation;
 
 int main(int argc, char* argv[])
 {
-	MACROSETLOCALE; //CodePage:936
+	if (false)//CodePage:936
+	{
+		cout << "Warning: failed to set the codepage to 936, \noutputs may garbled" << endl;
+	}
 	string input;
 	KTEXFile ktex;
+	
 	cout << "input:" << endl;
 	cin >> input;
+	//filesystem::path Path(input);
 	cout << "output:" << endl;
 	cin >> ktex.output;
 	ktex.LoadPNG(input);
 	ktex.ConvertFromPNG();
+	
 }
 
 
