@@ -12,11 +12,13 @@
 #define _BAD throw std::runtime_error("文件损坏")
 #define _NOT_OPEN throw std::runtime_error("打开失败")
 #define _WH_OUT_OF_RANGE throw std::out_of_range("图片宽/高超过65535")
+#define _UNKPIXEL throw std::invalid_argument("未知像素格式")
 #else
 #define _FAIL return false;
 #define _BAD return false
 #define _NOT_OPEN return false
 #define _WH_OUT_OF_RANGE return false
+#define _UNKPIXEL return false
 #endif
 
 namespace KTEXFileOperation
@@ -98,6 +100,7 @@ namespace KTEXFileOperation
 		~KTEXFile();
 		std::string output;//输出文件位置
 	private:
+		int __fastcall KTEXMipmapGen(_mipmap& target,uc_vector& image,unsigned short width,unsigned short height,unsigned short pitch);
 		void KTEXFirstBlockGen();
 		std::fstream fsTEX;
 		KTEXHeader Header;

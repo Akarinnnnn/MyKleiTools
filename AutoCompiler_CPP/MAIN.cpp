@@ -14,12 +14,14 @@ using namespace KTEXFileOperation;
 
 int main(int argc, char* argv[])
 {
-	if (false)//CodePage:936
+	if (MACROSETLOCALE)//CodePage:936
 	{
-		cout << "Warning: failed to set the codepage to 936, \noutputs may garbled" << endl;
+		cout << "Warning: failed to set the codepage to 936, \nconsole outputs may garbled" << endl;
 	}
 	string input;
+
 	KTEXFile ktex;
+	
 	
 	cout << "input:" << endl;
 	cin >> input;

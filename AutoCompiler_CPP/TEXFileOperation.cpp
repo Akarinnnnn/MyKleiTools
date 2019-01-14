@@ -84,28 +84,65 @@ KTEXFileOperation::KTEXFile::~KTEXFile()
 	delete[] mipmap.pdata;
 }
 
+int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(_mipmap& target,uc_vector& image,unsigned short wide,
+												unsigned short height,unsigned short Z)
+{
+	int blockcount = 0;
+	target.width = wide;
+	target.height = height;
+	target.Z = Z;
+	unsigned char* imgdata = image.data();//不引用，返回的是拷贝的地址，数据会变成GC后的东西
+	switch (Header.pixelformat)//像素格式判断，压缩，写入mipmap数据
+	{
+		using namespace squish;
+	case (pixfrm.ARGB):
+		target.pdata = imgdata;
+		return blockcount = wide * height * 4;
+		break;
+	case (pixfrm.DXT1):
+		blockcount = GetStorageRequirements(wide, height, kDxt1);
+		target.pdata = new char[blockcount];
+		Compress(image.data(), target.pdata, kDxt1);
+		return blockcount * 2;
+		break;
+
+	case (pixfrm.DXT3):
+		blockcount = GetStorageRequirements(wide, height, kDxt3);
+		target.pdata = new unsigned short[blockcount];
+		Compress(image.data(), target.pdata, kDxt3);
+		return blockcount * 2;
+		break;
+
+	case (pixfrm.DXT5):
+		blockcount = GetStorageRequirements(wide, height, kDxt5);
+		target.pdata = new unsigned short[blockcount];
+		Compress(image.data(), target.pdata, kDxt5);
+		return blockcount * 2;
+		break;
+	default:
+		_UNKPIXEL;
+	}
+	
+}
+
 inline void KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 {
 	constexpr unsigned int head = 0x5845544B;
+	unsigned int firstblock = 0;
 
-	KTEXHeader tempHeader = this->Header;
+	firstblock |= 4095;//自己写的有bug，干脆复制粘贴
+	firstblock <<= 2;
+	firstblock |= Header.flags;
+	firstblock <<= 5;
+	firstblock |= Header.mips;
+	firstblock <<= 4;
+	firstblock |= Header.texturetype;
+	firstblock <<= 5;
+	firstblock |= Header.pixelformat;
+	firstblock <<= 4;
+	firstblock |= Header.platform;
 
-	tempHeader.platform = head & 0xF;
-	tempHeader.pixelformat = (head >> 4) & 0x1F;
-	tempHeader.texturetype = (head >> 9) & 0xF;
-	tempHeader.mips = (head >> 13) & 0x1F;
-	tempHeader.flags = (head >> 18) & 3;
-	//tempHeader.remainder = (head >> 20) & 0xFFF;
-
-	tempHeader.flags <<= 18;
-	tempHeader.mips <<= 13;
-	tempHeader.texturetype <<= 9;
-	tempHeader.pixelformat <<= 4;
-	//tempHeader.platform<<=0;
-	
-	unsigned int* p = &tempHeader.flags;
-	for(char i=0;i<=4;i++ )
-		Header.firstblock |= *(p+i);
+	Header.firstblock=firstblock;
 }
 
 
@@ -123,10 +160,6 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	{
 		_WH_OUT_OF_RANGE;
 	}
-
-	unsigned char* imgdata=nullptr;
-
-	imgdata = image.data();
 	
 	ofstream ofstex(output,ios::binary|ios::trunc);
 	if(!ofstex.is_open())
@@ -139,47 +172,14 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	
 	//单mipmap,想了想gei慌好像用不到一个以上的mipmap
 
-	mipmap = { (unsigned short)wide,(unsigned short)height,0 };
+	int datasize = KTEXMipmapGen(mipmap, image, wide, height, 0);
 
 	//写入mipmap信息
 	ofstex.write((char*)(&mipmap.width), 2);
 	ofstex.write((char*)(&mipmap.height), 2);
-	ofstex.write((char*)(&mipmap.Z), 2);
+	ofstex.write((char*)(&mipmap.Z), 2);	
+	ofstex.write((char*)mipmap.pdata, datasize);
 
-	
-	switch(Header.pixelformat)//像素格式判断，压缩，写入mipmap数据
-	{ 
-		using namespace squish;
-		int blockcount = 0;
-
-		case (pixfrm.ARGB):
-			mipmap.pdata = (char*)imgdata;
-			ofstex.write((char*)mipmap.pdata, wide*height*4);
-			break;
-
-		case (pixfrm.DXT1):
-			blockcount = GetStorageRequirements(wide, height, kDxt1);
-			mipmap.pdata = new char[blockcount];
-			Compress(image.data(), mipmap.pdata, kDxt1);
-			ofstex.write((char*)mipmap.pdata, blockcount);
-			break;
-
-		case (pixfrm.DXT3):
-			blockcount = GetStorageRequirements(wide, height, kDxt3);
-			mipmap.pdata = new unsigned short[blockcount];
-			Compress(image.data(), mipmap.pdata, kDxt3);
-			ofstex.write((char*)mipmap.pdata, blockcount*2);
-			break;
-
-		case (pixfrm.DXT5):
-			blockcount = GetStorageRequirements(wide, height, kDxt5);
-			mipmap.pdata = new unsigned short[blockcount];
-			Compress(image.data(), mipmap.pdata, kDxt5);
-			ofstex.write((char*)mipmap.pdata, blockcount*2);
-			break;
-	}
-	
-	
 	ofstex.close();
 	return true;
 }
