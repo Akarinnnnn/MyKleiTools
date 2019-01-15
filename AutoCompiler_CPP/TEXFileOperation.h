@@ -23,22 +23,6 @@
 
 namespace KTEXFileOperation
 {
-	class KTEXexception : std::exception//不用这个了，水平太差
-	{
-	public:
-		KTEXexception() noexcept;
-		KTEXexception(char* MSG);
-		~KTEXexception() noexcept;
-		const char* what() noexcept;
-		KTEXexception& operator=(KTEXexception);
-	private:
-		struct 
-		{
-			char const* data;
-			bool dofree;
-		}data;
-
-	};
 	
 	struct  //platform
 	{
@@ -63,16 +47,17 @@ namespace KTEXFileOperation
 		char cube = 4;//cubemap
 	}constexpr textyp;
 	typedef std::vector<unsigned char> uc_vector;
+	
 	struct KTEXHeader
 	{
 		const char ktexheader[4] = { 0x4B,0x54,0x45,0x58 };//文件头,"KTEX",用ACSII值表示
 		//数据
 		unsigned int flags = 0;
-		unsigned int mips = 0;
+		unsigned int mips = 1;
 		unsigned int texturetype = (unsigned int)textyp.d1;
 		unsigned int pixelformat = (unsigned int)pixfrm.DXT5;
 		unsigned int platform = (unsigned int)platfrm.pc;
-		unsigned int remainder = 0;
+		//unsigned int remainder = 0;
 		//unsigned int remainder;
 		//end
 		//第一数据块
@@ -81,14 +66,14 @@ namespace KTEXFileOperation
 		//pixelformat 5bit, platform 4bit
 	};
 
-	struct _mipmap
+	struct mipmap
 	{
-		unsigned short width;
-		unsigned short height;
-		unsigned short Z=0;//Z Axis
-		void* pdata;
+		unsigned short width=0;
+		unsigned short height=0;
+		unsigned short Z=1;//Z Axis
+		uc_vector* pdata;
 	};
-
+	typedef std::vector<mipmap> mipmap_vector;
 	
 	class KTEXFile
 	{
@@ -99,14 +84,15 @@ namespace KTEXFileOperation
 		KTEXFile();
 		~KTEXFile();
 		std::string output;//输出文件位置
+
+		KTEXHeader Header;
 	private:
-		int __fastcall KTEXMipmapGen(_mipmap& target,uc_vector& image,unsigned short width,unsigned short height,unsigned short pitch);
+		int __fastcall KTEXMipmapGen(mipmap& target,uc_vector image,unsigned short width,unsigned short height,unsigned short pitch);
 		void KTEXFirstBlockGen();
 		std::fstream fsTEX;
-		KTEXHeader Header;
-		_mipmap* pMipmap;//为多mipmap做准备，重构工作量有点大
+		mipmap_vector vec_mipmaps;
 		uc_vector vecPNG;
-		_mipmap mipmap;
+		mipmap mipmap;//暂时用着
 	};
 
 }

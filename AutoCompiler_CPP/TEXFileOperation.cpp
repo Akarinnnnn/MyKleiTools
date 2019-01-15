@@ -33,7 +33,7 @@ KTEXFileOperation::KTEXFile::KTEXFile()
 {
 	Header.firstblock = 0;
 	mipmap.pdata = nullptr;
-	pMipmap = new _mipmap;
+	
 }
 
 /*KTEXFileOperation::KTEXFile::KTEXFile(string InputFileName)
@@ -86,40 +86,39 @@ KTEXFileOperation::KTEXFile::~KTEXFile()
 	delete[] mipmap.pdata;
 }
 
-int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(_mipmap& target,uc_vector& image,unsigned short wide,
+void __fastcall multimipmapgen(KTEXFileOperation::mipmap_vector inputvec)
+{
+	for (auto& tgt : inputvec)
+	{
+
+	}
+}
+
+int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(KTEXFileOperation::mipmap& target,uc_vector image,unsigned short wide,
 												unsigned short height,unsigned short Z)
 {
+	
 	int blockcount = 0;
 	target.width = wide;
 	target.height = height;
 	target.Z = Z;
-	unsigned char* imgdata = image.data();//不引用，返回的是拷贝的地址，数据会变成GC后的东西
+	unsigned char* imgdata = image.data();
 	switch (Header.pixelformat)//像素格式判断，压缩，写入mipmap数据
 	{
 		using namespace squish;
 	case (pixfrm.ARGB):
-		target.pdata = imgdata;
-		return blockcount = wide * height * 4;
+
 		break;
-	case (pixfrm.DXT1):
-		blockcount = GetStorageRequirements(wide, height, kDxt1);
-		target.pdata = new char[blockcount];
-		Compress(image.data(), target.pdata, kDxt1);
-		return blockcount * 2;
+	case (pixfrm.DXT1):		
+		
 		break;
 
 	case (pixfrm.DXT3):
-		blockcount = GetStorageRequirements(wide, height, kDxt3);
-		target.pdata = new unsigned short[blockcount];
-		Compress(image.data(), target.pdata, kDxt3);
-		return blockcount * 2;
+
 		break;
 
 	case (pixfrm.DXT5):
-		blockcount = GetStorageRequirements(wide, height, kDxt5);
-		target.pdata = new unsigned short[blockcount];
-		Compress(image.data(), target.pdata, kDxt5);
-		return blockcount * 2;
+
 		break;
 	default:
 		_UNKPIXEL;
@@ -129,10 +128,10 @@ int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(_mipmap& target,uc_vec
 
 inline void KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 {
-	constexpr unsigned int head = 0x5845544B;
+	//constexpr unsigned int head = 0x5845544B;
 	unsigned int firstblock = 0;
 
-	firstblock |= 4095;//自己写的有bug，干脆复制粘贴
+	firstblock |= 0xFFF;//自己写的有bug，干脆复制粘贴
 	firstblock <<= 2;
 	firstblock |= Header.flags;
 	firstblock <<= 5;
@@ -174,13 +173,14 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	
 	//单mipmap,想了想gei慌好像用不到一个以上的mipmap
 
-	int datasize = KTEXMipmapGen(mipmap, image, wide, height, 0);
+	unsigned int datasize = KTEXMipmapGen(mipmap, image, wide, height, 0);
 
 	//写入mipmap信息
 	ofstex.write((char*)(&mipmap.width), 2);
 	ofstex.write((char*)(&mipmap.height), 2);
-	ofstex.write((char*)(&mipmap.Z), 2);	
-	ofstex.write((char*)mipmap.pdata, datasize);
+	ofstex.write((char*)(&mipmap.Z), 2);
+	ofstex.write((char*)(&datasize), 4);
+	ofstex.write((char*)mipmap.pdata->data(), datasize);
 
 	ofstex.close();
 	return true;
@@ -191,33 +191,3 @@ int __fastcall KTEXFileOperation::KTEXFile::LoadPNG(std::string Input)
 	return lodepng::load_file(this->vecPNG, Input);
 }
 
-//exception
-KTEXFileOperation::KTEXexception::KTEXexception()noexcept
-{
-
-}
-
-KTEXFileOperation::KTEXexception::KTEXexception(char * MSG)
-{
-	this->data.data = MSG;
-}
-
-KTEXFileOperation::KTEXexception::~KTEXexception()
-{}
-
-const char * KTEXFileOperation::KTEXexception::what()noexcept
-{
-	return this->data.data;
-}
-
-KTEXFileOperation::KTEXexception & KTEXFileOperation::KTEXexception::operator=(KTEXexception a)
-{
-	if (this == &a)
-	{
-		return *this;
-	}
-	this->data.data = a.data.data;
-	this->data.dofree = a.data.dofree;
-
-	return *this;
-}

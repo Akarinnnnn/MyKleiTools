@@ -29,6 +29,12 @@ int main(int argc, char* argv[])
 	cout << "output:" << endl;
 	cin >> ktex.output;
 	ktex.LoadPNG(input);
+
+	ktex.Header.mips = 1;
+	ktex.Header.platform = platfrm.pc;
+	ktex.Header.texturetype = textyp.d1;
+	ktex.Header.pixelformat = pixfrm.DXT3;
+
 	ktex.ConvertFromPNG();
 	
 }
