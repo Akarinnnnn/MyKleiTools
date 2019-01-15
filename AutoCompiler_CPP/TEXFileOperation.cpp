@@ -31,7 +31,9 @@ using namespace std;
 
 KTEXFileOperation::KTEXFile::KTEXFile()
 {
-	
+	Header.firstblock = 0;
+	mipmap.pdata = nullptr;
+	pMipmap = new _mipmap;
 }
 
 /*KTEXFileOperation::KTEXFile::KTEXFile(string InputFileName)

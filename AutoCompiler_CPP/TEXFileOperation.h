@@ -69,8 +69,8 @@ namespace KTEXFileOperation
 		//Êý¾Ý
 		unsigned int flags = 0;
 		unsigned int mips = 0;
-		unsigned int texturetype = (unsigned int)textyp.d2;
-		unsigned int pixelformat = (unsigned int)pixfrm.DXT3;
+		unsigned int texturetype = (unsigned int)textyp.d1;
+		unsigned int pixelformat = (unsigned int)pixfrm.DXT5;
 		unsigned int platform = (unsigned int)platfrm.pc;
 		unsigned int remainder = 0;
 		//unsigned int remainder;

@@ -167,7 +167,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ImageOpreration.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="TEXFileOperation.h" />
   </ItemGroup>
