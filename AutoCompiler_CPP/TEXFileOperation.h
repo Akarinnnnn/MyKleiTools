@@ -74,23 +74,27 @@ namespace KTEXFileOperation
 		uc_vector* pdata;
 	};
 	typedef std::vector<mipmap> mipmap_vector;
-	
+	typedef std::vector<uc_vector> imgs;
 	class KTEXFile
 	{
 	public:
 		bool ConvertFromPNG();
-		int LoadPNG(std::string InputPngFileName);//使用lodepng 
+		int LoadPNG(const char* InputPngFileName);//使用lodepng 
 		//KTEXFile(std::string InputKtexFileName);//加载 KTEX,没弄好
 		KTEXFile();
 		~KTEXFile();
+		
 		std::string output;//输出文件位置
 
 		KTEXHeader Header;
 	private:
-		int __fastcall KTEXMipmapGen(mipmap& target,uc_vector image,unsigned short width,unsigned short height,unsigned short pitch);
+		int __fastcall KTEXMipmapGen(mipmap& target,uc_vector argb_image,unsigned short width,unsigned short height,unsigned short pitch);
 		void KTEXFirstBlockGen();
+		void __fastcall multimipmapgen(KTEXFileOperation::mipmap_vector mipmaps, imgs inputimgs);
+
 		std::fstream fsTEX;
 		mipmap_vector vec_mipmaps;
+		imgs vec_imgs;
 		uc_vector vecPNG;
 		mipmap mipmap;//暂时用着
 	};
