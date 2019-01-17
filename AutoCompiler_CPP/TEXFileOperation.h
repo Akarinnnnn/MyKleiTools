@@ -79,7 +79,7 @@ namespace KTEXFileOperation
 	{
 	public:
 		bool ConvertFromPNG();
-		int LoadPNG(const char* InputPngFileName);//使用lodepng 
+		int __fastcall LoadPNG(std::string InputPngFileName);//使用lodepng 
 		//KTEXFile(std::string InputKtexFileName);//加载 KTEX,没弄好
 		KTEXFile();
 		~KTEXFile();

@@ -22,10 +22,29 @@ int main(int argc, const char* argv[])
 		cout << "Warning: failed to set the codepage to 936, \nconsole outputs may garbled" << endl;
 	}
 	KTEXFile ktex;
-	ktex.LoadPNG(argv[1]);
-
-	if (argv[2][1] != '\0')
+	
+	if (argc == 1)
+	{
+		cout << "No PNG File selected" << endl;
+		cout << "Usage: mypng PNG KTEX(Optional)" << endl;
+		return 100;
+	}
+	cout << "input: " << argv[1] << endl;
+	if (ktex.LoadPNG(argv[1]) != 0)
+		return 101;
+	if (argc >= 3)
+	{
 		ktex.output = argv[2];
+	}
+	else
+	{
+		ktex.output = argv[1];
+		auto iter = ktex.output.end();
+		*(iter - 1) = 'x';
+		*(iter - 2) = 'e';
+		*(iter - 3) = 't';
+	}
+	cout << "output: " << ktex.output << endl;
 	ktex.ConvertFromPNG();
 	return 0;
 

@@ -52,12 +52,13 @@ void __fastcall KTEXFileOperation::KTEXFile::multimipmapgen(mipmap_vector inputm
 int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(KTEXFileOperation::mipmap& target,uc_vector image,unsigned short wide,
 												unsigned short height,unsigned short Z)
 {
-	
+	cout << "Generating Mipmap data..." << endl;
 	int blockcount = 0;
 	target.width = wide;
 	target.height = height;
 	target.Z = Z;
 	unsigned char* imgdata = image.data();
+	cout << "Compressing..." << endl;
 	switch (Header.pixelformat)//像素格式判断，压缩，写入mipmap数据
 	{
 		using namespace squish;
@@ -89,6 +90,7 @@ int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(KTEXFileOperation::mip
 inline void KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 {
 	//constexpr unsigned int head = 0x5845544B;
+	cout << "Generating KTEXFirstBlock..." << endl;
 	unsigned int firstblock = 0;
 
 	firstblock |= 0xFFF;//自己写的有bug，干脆复制粘贴
@@ -110,6 +112,7 @@ inline void KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 
 bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 {
+	cout << "Convert Start." << endl;
 	using namespace lodepng;
 	//namespace fs = std::filesystem;
 	uc_vector image;//RGBA
@@ -136,17 +139,19 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	unsigned int datasize = KTEXMipmapGen(mipmap, image, wide, height, 0);
 
 	//写入mipmap信息
+	cout << "Write mipmap data" << endl;
 	ofstex.write((char*)(&mipmap.width), 2);
 	ofstex.write((char*)(&mipmap.height), 2);
 	ofstex.write((char*)(&mipmap.Z), 2);
 	ofstex.write((char*)(&datasize), 4);
 	ofstex.write((char*)mipmap.pdata->data(), mipmap.pdata->size());
-
+	cout << "Done." << endl;
 	ofstex.close();
 	return true;
 }
 
-int __fastcall KTEXFileOperation::KTEXFile::LoadPNG(const char* Input)
+int __fastcall KTEXFileOperation::KTEXFile::LoadPNG(string Input)
 {
+	cout << "Loading PNG file..." << endl;
 	return lodepng::load_file(this->vecPNG, Input);
 }
