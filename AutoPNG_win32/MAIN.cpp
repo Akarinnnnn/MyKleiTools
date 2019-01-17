@@ -4,13 +4,16 @@
 #include "pch.h"
 #include <iostream>
 #include <filesystem>
+#include <thread>
+#include <mutex>
+#include "..\AutoCompiler_CPP\TEXFileOperation.h"
 #include "windows.h"
 //可能的注册表项: HKEY_CURRENT_USER\System\GameConfigStore\Children\2c1ae850-e27e-4f10-a985-2dd951d15ba4
 //
+using namespace std;
 int main()
 {
-	using namespace std;
-	using namespace filesystem;
+	using namespace std::experimental::filesystem;
 	DWORD buffiersize = MAX_PATH;
 	wchar_t GameBinPath[MAX_PATH]{ 0 };
 	RegGetValueW(HKEY_CURRENT_USER, L"System\\GameConfigStore\\Children\\2c1ae850-e27e-4f10-a985-2dd951d15ba4", L"MatchedExeFullPath",
@@ -19,15 +22,40 @@ int main()
 	wstring modsdir = gamebin + L"../" + L"mods";
 	path mods(modsdir);
 	vector<string> KTEXpaths(40);
+	bool all_clear;
 	for (auto &遍历器 : directory_iterator(mods)) 
 	{
 		auto 内容 = 遍历器.path();//相信我，这玩意能跑
 		KTEXpaths.push_back(内容.string());
 	}
-	for (string filename : KTEXpaths)
+
+	//想搞多线程
+	
+}
+
+bool convert_thread(vector<string>& str)
+{
+	mutex mutex;
+	string pngfile;
+	if (mutex.try_lock())
 	{
-		//TODO:转换操作
+		if (str.empty())
+		{
+			return true;
+		}
+		pngfile = *str.end();
+		str.pop_back();
+		mutex.unlock();
 	}
+	else
+	{
+		return false;
+	}
+
+	KTEXFileOperation::KTEXFile KTEX;
+	KTEX.LoadPNG(pngfile);
+	KTEX.ConvertFromPNG();
+	return false;
 }
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
