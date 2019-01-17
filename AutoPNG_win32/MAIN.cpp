@@ -3,37 +3,17 @@
 
 #include "pch.h"
 #include <iostream>
+#include <regex>
 #include <filesystem>
 #include <thread>
+#include <exception>
 #include <mutex>
 #include "..\AutoCompiler_CPP\TEXFileOperation.h"
 #include "windows.h"
 //可能的注册表项: HKEY_CURRENT_USER\System\GameConfigStore\Children\2c1ae850-e27e-4f10-a985-2dd951d15ba4
 //
 using namespace std;
-int main()
-{
-	using namespace std::experimental::filesystem;
-	DWORD buffiersize = MAX_PATH;
-	wchar_t GameBinPath[MAX_PATH]{ 0 };
-	RegGetValueW(HKEY_CURRENT_USER, L"System\\GameConfigStore\\Children\\2c1ae850-e27e-4f10-a985-2dd951d15ba4", L"MatchedExeFullPath",
-		RRF_RT_ANY, NULL, GameBinPath, &buffiersize);
-	wstring gamebin(GameBinPath);
-	wstring modsdir = gamebin + L"../" + L"mods";
-	path mods(modsdir);
-	vector<string> KTEXpaths(40);
-	bool all_clear;
-	for (auto &遍历器 : directory_iterator(mods)) 
-	{
-		auto 内容 = 遍历器.path();//相信我，这玩意能跑
-		KTEXpaths.push_back(内容.string());
-	}
-
-	//想搞多线程
-	
-}
-
-bool convert_thread(vector<string>& str)
+bool convert_func(vector<string>& str)
 {
 	mutex mutex;
 	string pngfile;
@@ -57,6 +37,45 @@ bool convert_thread(vector<string>& str)
 	KTEX.ConvertFromPNG();
 	return false;
 }
+
+int main()
+{
+	using namespace std::filesystem;
+	DWORD buffiersize = MAX_PATH;
+	regex PNGsuffix(".png", regex_constants::icase);
+	//wchar_t GameBinPath[MAX_PATH]{ 0 };
+	//RegGetValueW(HKEY_CURRENT_USER, L"System\\GameConfigStore\\Children\\2c1ae850-e27e-4f10-a985-2dd951d15ba4", L"MatchedExeFullPath",
+		//RRF_RT_ANY, NULL, GameBinPath, &buffiersize);
+	//wstring gamebin(GameBinPath);
+	
+	path mods("mods");
+	vector<string> KTEXpaths(40);
+	bool all_clear = false;
+try
+{
+	for (auto &遍历器 : directory_iterator(mods)) 
+	{
+		auto 内容 = 遍历器.path();//相信我，这玩意能跑
+		if (regex_search(内容.u8string(), PNGsuffix))
+		{
+			KTEXpaths.push_back(内容.stem().u8string());
+		}
+	}
+}
+catch(std::filesystem::filesystem_error e)
+{
+	cerr << e.what() << endl;
+}
+	std::thread converters[16];//max 16 threads
+	while (!all_clear)
+	{
+		all_clear = convert_func(KTEXpaths);
+	}
+	//想搞多线程
+	
+}
+
+
 
 // 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
 // 调试程序: F5 或调试 >“开始调试”菜单
