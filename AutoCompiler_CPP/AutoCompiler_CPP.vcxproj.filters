@@ -13,15 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\squish">
-      <UniqueIdentifier>{283d880c-e786-4ef0-8761-229673dead27}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\squish">
-      <UniqueIdentifier>{9fe64ca4-cea5-4c86-a2d2-878a4b711491}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\lodepng">
-      <UniqueIdentifier>{ee969d33-692e-4179-b4dd-e4e2aeff637d}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -30,96 +21,18 @@
     <ClInclude Include="TEXFileOperation.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="squish\squish.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\alpha.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\clusterfit.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\colourblock.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\colourfit.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\colourset.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\config.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\maths.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\rangefit.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\simd.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\simd_float.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\simd_sse.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\simd_ve.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="squish\singlecolourfit.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="TEXFileOperation.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="MAIN.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="squish\alpha.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="squish\clusterfit.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="squish\colourblock.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="squish\colourfit.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="squish\colourset.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="squish\maths.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="squish\rangefit.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="squish\singlecolourfit.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="squish\squish.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="lodepng\lodepng.cpp">
-      <Filter>源文件\lodepng</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ispowerof2.asm">
       <Filter>源文件</Filter>
-    </None>
-    <None Include="squish\singlecolourlookup.inl">
-      <Filter>源文件\squish</Filter>
     </None>
   </ItemGroup>
 </Project>

@@ -145,7 +145,7 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	ofstex.write((char*)(&mipmap.Z), 2);
 	ofstex.write((char*)(&datasize), 4);
 	ofstex.write((char*)mipmap.pdata->data(), mipmap.pdata->size());
-	cout << "Done." << endl;
+	cout << "Done.\n" << endl;
 	ofstex.close();
 	return true;
 }
@@ -153,6 +153,8 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 int __fastcall KTEXFileOperation::KTEXFile::LoadPNG(string Input)
 {
 	cout << "Loading PNG file..." << endl;
+	output = Input;
+	cout << Input << endl;
 	auto iter = output.end();
 	*(iter - 1) = 'x';
 	*(iter - 2) = 'e';

@@ -7,9 +7,16 @@
 #include <filesystem>
 #include <thread>
 #include <exception>
+#include <system_error>
 #include <mutex>
 #include "..\AutoCompiler_CPP\TEXFileOperation.h"
 #include "windows.h"
+
+#ifdef _WIN32
+#define MACROSETLOCALE setlocale(LC_ALL, "Chinese_People's Republic of China.936")
+#else
+#define MACROSETLOCALE setlocale(LC_ALL, "zh_CN.GBK")
+#endif
 //可能的注册表项: HKEY_CURRENT_USER\System\GameConfigStore\Children\2c1ae850-e27e-4f10-a985-2dd951d15ba4
 //
 using namespace std;
@@ -23,7 +30,7 @@ bool convert_func(vector<string>& str)
 		{
 			return true;
 		}
-		pngfile = *str.end();
+		pngfile = *(str.end()-1);
 		str.pop_back();
 		mutex.unlock();
 	}
@@ -39,34 +46,60 @@ bool convert_func(vector<string>& str)
 }
 
 int main()
-{
+ {
+	MACROSETLOCALE;
 	using namespace std::filesystem;
-	DWORD buffiersize = MAX_PATH;
-	regex PNGsuffix(".png", regex_constants::icase);
-	//wchar_t GameBinPath[MAX_PATH]{ 0 };
-	//RegGetValueW(HKEY_CURRENT_USER, L"System\\GameConfigStore\\Children\\2c1ae850-e27e-4f10-a985-2dd951d15ba4", L"MatchedExeFullPath",
-		//RRF_RT_ANY, NULL, GameBinPath, &buffiersize);
-	//wstring gamebin(GameBinPath);
+	unsigned long buffiersize = MAX_PATH;
+	regex PNGsuffix("(.*)(.png)", regex_constants::icase);
+	wchar_t GameBinPath[MAX_PATH]{ 0 };
+	RegGetValueW(HKEY_CURRENT_USER, L"System\\GameConfigStore\\Children\\2c1ae850-e27e-4f10-a985-2dd951d15ba4", L"MatchedExeFullPath",
+		RRF_RT_ANY, NULL, GameBinPath, &buffiersize);
+	wstring modspath(GameBinPath);
+	modspath += L"\\..\\..\\mods\\";
+	path mods(modspath);
 	
-	path mods("mods");
-	vector<string> KTEXpaths(40);
+	vector<string> KTEXpaths;
+	KTEXpaths.reserve(40);
 	bool all_clear = false;
-try
-{
-	for (auto &遍历器 : directory_iterator(mods)) 
+	cout << "开始遍历文件" << endl;
+	for (auto &diriter : recursive_directory_iterator(mods))
 	{
-		auto 内容 = 遍历器.path();//相信我，这玩意能跑
-		if (regex_search(内容.u8string(), PNGsuffix))
+try
+{		auto dir = diriter;
+		if(dir.is_regular_file() 
+			&& dir.exists() 
+			&& dir.path().has_filename() 
+			&& regex_search(dir.path().filename().string(), PNGsuffix))
 		{
-			KTEXpaths.push_back(内容.stem().u8string());
+			auto canonicalpath = canonical(dir.path());
+			cout << canonicalpath.string() << endl;
+			KTEXpaths.push_back(canonicalpath.string());
 		}
-	}
 }
 catch(std::filesystem::filesystem_error e)
 {
 	cerr << e.what() << endl;
 }
-	std::thread converters[16];//max 16 threads
+catch (system_error e)
+{
+	cerr << e.what() << endl;
+	if (e.code().value() == 1113)
+	{	
+		if (diriter.path().filename().wstring().find(L" "))
+		{
+			cout << "文件/文件夹名带空格，这是不行的" << endl;
+			wcout << diriter.path().filename().wstring() << endl;
+			cout << "这是大概的名字，搜索出来改个名字或者删掉吧" << endl;
+		}
+	}
+}
+catch (std::exception e)
+{
+	cerr << e.what() << endl;
+}
+	}
+	//std::thread converters[16];//max 16 threads
+	cout << "开始转换" << endl;
 	while (!all_clear)
 	{
 		all_clear = convert_func(KTEXpaths);
