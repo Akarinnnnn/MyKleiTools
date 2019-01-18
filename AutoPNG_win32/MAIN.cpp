@@ -85,12 +85,9 @@ catch (system_error e)
 	cerr << e.what() << endl;
 	if (e.code().value() == 1113)
 	{	
-		if (diriter.path().filename().wstring().find(L" "))
-		{
-			cout << "文件/文件夹名带空格，这是不行的" << endl;
-			wcout << diriter.path().filename().wstring() << endl;
-			cout << "这是大概的名字，搜索出来改个名字或者删掉吧" << endl;
-		}
+		cout << "文件/文件夹名乱码，这是不行的" << endl;
+		wcout << diriter.path().filename().wstring() << endl;
+		cout << "这是大概的名字，搜索出来改个名字或者删掉吧" << endl;
 	}
 }
 catch (std::exception e)
