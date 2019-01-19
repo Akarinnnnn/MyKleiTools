@@ -27,17 +27,19 @@ int main(int argc, const char* argv[])
 	{
 		switch (argc)
 		{
-		case(1):
-			cout << "Usage: mypng PNG KTEX(Optional)" << endl << "Input filename to contiue" << endl;
-			cin >> input;
-			ktex.LoadPNG(input);
-			break;
 		case(2):
 			cout << "input: " << argv[1] << endl;
 			ktex.LoadPNG(argv[1]);
+			break;
 		case(3):
+			cout << "input: " << argv[1] << endl;
+			ktex.LoadPNG(argv[1]);
 			ktex.output = argv[2];
+			break;
 		default:
+			cout << "Usage: mypng PNG KTEX(Optional)" << endl << "Input filename to contiue" << endl;
+			cin >> input;
+			ktex.LoadPNG(input);
 			break;
 		}
 	}

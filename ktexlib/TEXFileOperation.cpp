@@ -128,7 +128,7 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	ofstream ofstex(output,ios::binary|ios::trunc);
 	if(!ofstex.is_open())
 	{
-		cout << "failed to open it" << endl;
+		cout << "output failure" << endl;
 		std::runtime_error("KTEXFileOperation::KTEXFile::ConvertFromPNG ´ò¿ªÊ§°Ü");
 	}
 	unsigned int* p_imgvec = (unsigned int*)image.data();
