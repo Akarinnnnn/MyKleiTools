@@ -9,7 +9,7 @@
 #include <exception>
 #include <system_error>
 #include <mutex>
-#include "..\AutoCompiler_CPP\TEXFileOperation.h"
+#include "..\ktexlib\TEXFileOperation.h"
 #include "windows.h"
 
 #ifdef _WIN32

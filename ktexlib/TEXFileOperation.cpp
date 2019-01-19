@@ -49,7 +49,7 @@ void __fastcall KTEXFileOperation::KTEXFile::multimipmapgen(mipmap_vector inputm
 
 }
 
-int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(KTEXFileOperation::mipmap& target,uc_vector image,unsigned short wide,
+unsigned int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(KTEXFileOperation::mipmap& target,uc_vector image,unsigned short wide,
 												unsigned short height,unsigned short Z)
 {
 	cout << "Generating Mipmap data..." << endl;
@@ -82,7 +82,7 @@ int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(KTEXFileOperation::mip
 		return target.pdata->size();
 		break;
 	default:
-		_UNKPIXEL;
+		throw std::invalid_argument("KTEXFileOperation::KTEXFile::KTEXMipmapGen 像素格式参数错误");
 	}
 	
 }
@@ -122,12 +122,27 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	mipmap.pdata = new uc_vector;
 	if (wide > USHRT_MAX || height > USHRT_MAX)
 	{
-		_WH_OUT_OF_RANGE;
+		throw std::out_of_range("KTEXFileOperation::KTEXFile::ConvertFromPNG 图片宽/高超过65535");
 	}
 	
 	ofstream ofstex(output,ios::binary|ios::trunc);
 	if(!ofstex.is_open())
-		_NOT_OPEN;
+	{
+		cout << "failed to open it" << endl;
+		std::runtime_error("KTEXFileOperation::KTEXFile::ConvertFromPNG 打开失败");
+	}
+	unsigned int* p_imgvec = (unsigned int*)image.data();
+	for (unsigned short y = 0; y < height/2; y++)
+	{
+		auto curline = (unsigned int*)p_imgvec + (y * wide);
+		auto tgtline = (unsigned int*)p_imgvec + ((height - y - 1)*wide);
+		for (unsigned short x = 0; x < wide; x++)
+		{
+			unsigned int temp = *(tgtline + x);
+			*(tgtline + x) = *(curline + x);
+			*(curline + x) = temp;
+		}
+	}//我只会for循环
 
 	KTEXFirstBlockGen();
 
@@ -144,13 +159,13 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	ofstex.write((char*)(&mipmap.height), 2);
 	ofstex.write((char*)(&mipmap.Z), 2);
 	ofstex.write((char*)(&datasize), 4);
-	ofstex.write((char*)mipmap.pdata->data(), mipmap.pdata->size());
+	ofstex.write((char*)mipmap.pdata->data(), datasize);
 	cout << "Done.\n" << endl;
 	ofstex.close();
 	return true;
 }
 
-int __fastcall KTEXFileOperation::KTEXFile::LoadPNG(string Input)
+void __fastcall KTEXFileOperation::KTEXFile::LoadPNG(string Input)
 {
 	cout << "Loading PNG file..." << endl;
 	output = Input;
@@ -159,5 +174,11 @@ int __fastcall KTEXFileOperation::KTEXFile::LoadPNG(string Input)
 	*(iter - 1) = 'x';
 	*(iter - 2) = 'e';
 	*(iter - 3) = 't';
-	return lodepng::load_file(this->vecPNG, Input);
+	int err = lodepng::load_file(this->vecPNG, Input);
+	if (err != 0)
+	{
+		string what = "lodepng error,";
+		what += lodepng_error_text(err);
+		throw std::exception(what.c_str());
+	}
 }

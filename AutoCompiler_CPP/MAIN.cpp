@@ -5,9 +5,9 @@
 #include <iostream>
 #include <filesystem>
 
-//#define KTEXEXCEPTION
 
-#include "TEXFileOperation.h"
+
+#include "..\ktexlib\TEXFileOperation.h"
 
 //#define FUNCTEST//测试开关
 
@@ -21,28 +21,30 @@ int main(int argc, const char* argv[])
 	{
 		cout << "Warning: failed to set the codepage to 936, \nconsole outputs may garbled" << endl;
 	}
+	string input;
 	KTEXFile ktex;
-	
-	if (argc == 1)
+	try 
 	{
-		cout << "No PNG File selected" << endl;
-		cout << "Usage: mypng PNG KTEX(Optional)" << endl;
+		switch (argc)
+		{
+		case(1):
+			cout << "Usage: mypng PNG KTEX(Optional)" << endl << "Input filename to contiue" << endl;
+			cin >> input;
+			ktex.LoadPNG(input);
+			break;
+		case(2):
+			cout << "input: " << argv[1] << endl;
+			ktex.LoadPNG(argv[1]);
+		case(3):
+			ktex.output = argv[2];
+		default:
+			break;
+		}
+	}
+	catch (exception e)
+	{
+		cout << e.what() << endl;
 		return 100;
-	}
-	cout << "input: " << argv[1] << endl;
-	if (ktex.LoadPNG(argv[1]) != 0)
-		return 101;
-	if (argc >= 3)
-	{
-		ktex.output = argv[2];
-	}
-	else
-	{
-		ktex.output = argv[1];
-		auto iter = ktex.output.end();
-		*(iter - 1) = 'x';
-		*(iter - 2) = 'e';
-		*(iter - 3) = 't';
 	}
 	cout << "output: " << ktex.output << endl;
 	ktex.ConvertFromPNG();
@@ -52,15 +54,26 @@ int main(int argc, const char* argv[])
 #else
 int main()
 {
-	vector<int> vecint;
-	vecint.reserve(10);
-	int* vecintdata = vecint.data();
-	
-	for (int i=0; i < 8; i++)
+	auto height = 2;
+	auto wide = 2;
+	unsigned char p_imgvec[16] =
+	{ 
+	1,2,3,4,  5,6,7,8,
+
+	9,10,11,12,  13,14,15,16
+	};
+
+	for (unsigned short y = 0; y < height; y++)
 	{
-		*(vecintdata + i) = i;
+		auto curline = (unsigned int*)p_imgvec + (y * wide);
+		auto tgtline = (unsigned int*)p_imgvec + ((height - y - 1)*wide);
+		for (unsigned short x = 0; x < wide; x++)
+		{
+			unsigned int temp = *(tgtline + x);
+			*(tgtline + x) = *(curline + x);
+			*(curline + x) = temp;
+		}
 	}
-	cout << ios::oct << vecint.size() << endl;
 	return 0;
 }
 #endif // FUNCTEST

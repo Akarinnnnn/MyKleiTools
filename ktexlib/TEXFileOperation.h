@@ -7,19 +7,6 @@
 #include "lodepng.h"
 #include "squish.h"
 //#include <filesystem>
-#ifdef KTEXEXCEPTION //要处理异常就定义这个
-#define _FAIL throw std::runtime_error("读取失败")
-#define _BAD throw std::runtime_error("文件损坏")
-#define _NOT_OPEN throw std::runtime_error("打开失败")
-#define _WH_OUT_OF_RANGE throw std::out_of_range("图片宽/高超过65535")
-#define _UNKPIXEL throw std::invalid_argument("未知像素格式")
-#else
-#define _FAIL return false;
-#define _BAD return false
-#define _NOT_OPEN return false
-#define _WH_OUT_OF_RANGE return false
-#define _UNKPIXEL return false
-#endif
 
 namespace KTEXFileOperation
 {
@@ -79,7 +66,7 @@ namespace KTEXFileOperation
 	{
 	public:
 		bool ConvertFromPNG();
-		int __fastcall LoadPNG(std::string InputPngFileName);//使用lodepng 
+		void __fastcall LoadPNG(std::string InputPngFileName);//使用lodepng 
 		//KTEXFile(std::string InputKtexFileName);//加载 KTEX,没弄好
 		KTEXFile();
 		~KTEXFile();
@@ -88,7 +75,7 @@ namespace KTEXFileOperation
 
 		KTEXHeader Header;
 	private:
-		int __fastcall KTEXMipmapGen(mipmap& target,uc_vector argb_image,unsigned short width,unsigned short height,unsigned short pitch);
+		unsigned int __fastcall KTEXMipmapGen(mipmap& target,uc_vector argb_image,unsigned short width,unsigned short height,unsigned short pitch);
 		void KTEXFirstBlockGen();
 		void __fastcall multimipmapgen(KTEXFileOperation::mipmap_vector mipmaps, imgs inputimgs);
 
