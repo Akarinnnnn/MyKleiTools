@@ -4,13 +4,17 @@
 #include <vector>
 #include <iostream>
 #include <exception>
-#include "lodepng.h"
-#include "squish.h"
+#include "lodepng\lodepng.h"
+#include "squish\squish.h"
 //#include <filesystem>
+
+namespace KTEXlib 
+{
+	namespace KTEXFileOperation = ::KTEXFileOperation;
+}
 
 namespace KTEXFileOperation
 {
-	
 	struct  //platform
 	{
 		char pc = 12;
