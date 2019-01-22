@@ -9,8 +9,11 @@
 #include <exception>
 #include <system_error>
 #include <mutex>
-#include "..\ktexlib\TEXFileOperation.h"
 #include "windows.h"
+
+#define MULTI_THREAD_KTEXCONOUTPUT
+#include "..\ktexlib\TEXFileOperation.h"
+
 
 #ifdef _WIN32
 #define MACROSETLOCALE setlocale(LC_ALL, "Chinese_People's Republic of China.936")
@@ -20,59 +23,57 @@
 //可能的注册表项: HKEY_CURRENT_USER\System\GameConfigStore\Children\2c1ae850-e27e-4f10-a985-2dd951d15ba4
 //
 using namespace std;
-bool convert_func(vector<string>& str)
+void convert_func(vector<string>& str,unsigned short& statuses,unsigned char converterID)
 {
 	mutex mutex;
 	string pngfile;
-	if (mutex.try_lock())
+	bool status=false;
+	while (!status)
 	{
-		if (str.empty())
+		if (mutex.try_lock())
 		{
+			if (str.empty())
+			{
+				mutex.unlock();
+				status = true;
+				continue;
+			}
+			pngfile = *(str.end() - 1);
+			str.pop_back();
 			mutex.unlock();
-			return true;
 		}
-		pngfile = *(str.end()-1);
-		str.pop_back();
-		mutex.unlock();
+		ktexlib::KTEXFileOperation::KTEXFile KTEX;
+		KTEX.LoadPNG(pngfile);
+		KTEX.ConvertFromPNG();
 	}
-	else
-	{
-		return false;
-	}
-
-	ktexlib::KTEXFileOperation::KTEXFile KTEX;
-	KTEX.LoadPNG(pngfile);
-	KTEX.ConvertFromPNG();
-	return false;
+	statuses |= (1 << converterID);
 }
 
 int main()
  {
 	MACROSETLOCALE;
-	////////////////////这里也改一下，改成std::experemental:filesystem/////////////////////////
+	////////////////////G++这里也改一下，改成std::experemental:filesystem/////////////////////////
 	using namespace std::filesystem;
 	unsigned long buffiersize = MAX_PATH;
 	regex PNGsuffix("(.*)(.png)", regex_constants::icase);
 	wchar_t GameBinPath[MAX_PATH]{ 0 };
 	RegGetValueW(HKEY_CURRENT_USER, L"System\\GameConfigStore\\Children\\2c1ae850-e27e-4f10-a985-2dd951d15ba4", L"MatchedExeFullPath",
 		RRF_RT_ANY, NULL, GameBinPath, &buffiersize);
-	wstring modspath(GameBinPath);
+	wstring modspath(GameBinPath);//Linux玩家可以改成常量或者cin
 	modspath += L"\\..\\..\\mods\\";
 	path mods(modspath);
-	char num_of_proc[4]{ 0 };
-	unsigned char 处理器数量 = 0;
+	/*char num_of_proc[5]{ 0 };
 	if (GetEnvironmentVariableA("NUMBER_OF_PROCESSORS", num_of_proc, 4))
 	{
-		处理器数量 = atoi(num_of_proc); 
+		num_of_proc[4] = atoi(num_of_proc); 
 	}
 	else
 	{
 		cout << "获取处理器数量失败，转换线程将只有一个" << endl;
-		处理器数量 = 1;
-	}
+		num_of_proc[4] = 1;
+	}*/
 	vector<string> PNGs;
 	PNGs.reserve(40);
-	bool all_clear = false;
 	cout << "开始遍历文件" << endl;
 	for (auto dir : directory_iterator(mods))
 	{
@@ -122,15 +123,26 @@ int main()
 		}
 
 	}
-	//std::thread converters[16];//上限16线程
-	vector<bool> converter_status(处理器数量);
 	
 	cout << "开始转换" << endl;
-	while (!all_clear)
+
+	unsigned short clear_status = 0;
+	unsigned short converter_status = 0;
+	auto cpuscount = thread::hardware_concurrency();
+	for (unsigned char i = 0; i < cpuscount; i++)
 	{
-		all_clear = convert_func(PNGs);
+		clear_status |= (1 << i);
+		thread converter(convert_func,ref(PNGs), ref(converter_status), i);
+		converter.detach();
 	}
-	//想搞多线程
+	
+	while (converter_status ^clear_status)//^ = xor
+	{
+
+	}
+	cout << "完成" << endl;
+
+	//在搞多线程
 	
 }
 

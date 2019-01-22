@@ -2,7 +2,7 @@
 #include "TEXFileOperation.h"
 
 template<typename T>
-inline bool ArrayCompare(T array1[4], const T array2[4], unsigned long long count)
+inline bool ArrayCompare(T array1[], const T array2[], unsigned long long count)
 {
 	//UINT64 p1,p2 =(UINT64*)array1,(UINT64*)array2
 	for (unsigned long long i = 0; i < count; i++)
@@ -52,13 +52,17 @@ void __fastcall ktexlib::KTEXFileOperation::KTEXFile::multimipmapgen(mipmap_vect
 unsigned int __fastcall ktexlib::KTEXFileOperation::KTEXFile::KTEXMipmapGen(ktexlib::KTEXFileOperation::mipmap& target,uc_vector image,unsigned short wide,
 												unsigned short height,unsigned short Z)
 {
+#ifndef MULTI_THREAD_KTEXCONOUTPUT
 	cout << "Generating Mipmap data..." << endl;
+#endif
 	int blockcount = 0;
 	target.width = wide;
 	target.height = height;
 	target.Z = Z;
 	unsigned char* imgdata = image.data();
+#ifndef MULTI_THREAD_KTEXCONOUTPUT
 	cout << "Compressing..." << endl;
+#endif
 	switch (Header.pixelformat)//像素格式判断，压缩，写入mipmap数据
 	{
 		using namespace squish;
@@ -90,7 +94,9 @@ unsigned int __fastcall ktexlib::KTEXFileOperation::KTEXFile::KTEXMipmapGen(ktex
 inline void ktexlib::KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 {
 	//constexpr unsigned int head = 0x5845544B;
+#ifndef MULTI_THREAD_KTEXCONOUTPUT
 	cout << "Generating KTEXFirstBlock..." << endl;
+#endif
 	unsigned int firstblock = 0;
 
 	firstblock |= 0xFFF;//自己写的有bug，干脆复制粘贴
@@ -112,7 +118,9 @@ inline void ktexlib::KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 
 bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 {
+#ifndef MULTI_THREAD_KTEXCONOUTPUT
 	cout << "Convert Start." << endl;
+#endif
 	using namespace lodepng;
 	//namespace fs = std::filesystem;
 	uc_vector image;//RGBA
@@ -154,20 +162,27 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	unsigned int datasize = KTEXMipmapGen(mipmap, image, wide, height, 0);
 
 	//写入mipmap信息
+#ifndef MULTI_THREAD_KTEXCONOUTPUT
 	cout << "Write mipmap data" << endl;
+#endif
 	ofstex.write((char*)(&mipmap.width), 2);
 	ofstex.write((char*)(&mipmap.height), 2);
 	ofstex.write((char*)(&mipmap.Z), 2);
 	ofstex.write((char*)(&datasize), 4);
 	ofstex.write((char*)mipmap.pdata->data(), datasize);
-	cout << "Done.\n" << endl;
+	mutex lock;
+	lock.lock();
+	cout << output << "\nDone.\n" << endl;
+	lock.unlock();
 	ofstex.close();
 	return true;
 }
 
 void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(string Input)
 {
+#ifndef MULTI_THREAD_KTEXCONOUTPUT
 	cout << "Loading PNG file..." << endl;
+#endif
 	output = Input;
 	cout << Input << endl;
 	auto iter = output.end();
