@@ -29,27 +29,27 @@ char* ReverseByByte(char* p, unsigned long long bytecount)//p强制转换就行
 
 using namespace std;
 
-KTEXFileOperation::KTEXFile::KTEXFile()
+ktexlib::KTEXFileOperation::KTEXFile::KTEXFile()
 {
 	Header.firstblock = 0;
 	mipmap.pdata = nullptr;
 }
 
-KTEXFileOperation::KTEXFile::~KTEXFile()
+ktexlib::KTEXFileOperation::KTEXFile::~KTEXFile()
 {
 	fsTEX.close();
 	delete mipmap.pdata;
 }
 
-void __fastcall KTEXFileOperation::KTEXFile::multimipmapgen(mipmap_vector inputmip,imgs inputimg)
+void __fastcall ktexlib::KTEXFileOperation::KTEXFile::multimipmapgen(mipmap_vector inputmip,imgs inputimg)
 {
-	using namespace KTEXFileOperation;
+	using namespace ktexlib::KTEXFileOperation;
 	auto iter = inputmip.begin();
 	auto iterimgs = inputimg.begin();
 
 }
 
-unsigned int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(KTEXFileOperation::mipmap& target,uc_vector image,unsigned short wide,
+unsigned int __fastcall ktexlib::KTEXFileOperation::KTEXFile::KTEXMipmapGen(ktexlib::KTEXFileOperation::mipmap& target,uc_vector image,unsigned short wide,
 												unsigned short height,unsigned short Z)
 {
 	cout << "Generating Mipmap data..." << endl;
@@ -82,12 +82,12 @@ unsigned int __fastcall KTEXFileOperation::KTEXFile::KTEXMipmapGen(KTEXFileOpera
 		return target.pdata->size();
 		break;
 	default:
-		throw std::invalid_argument("KTEXFileOperation::KTEXFile::KTEXMipmapGen 像素格式参数错误");
+		throw std::invalid_argument("ktexlib::KTEXFileOperation::KTEXFile::KTEXMipmapGen 像素格式参数错误");
 	}
 	
 }
 
-inline void KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
+inline void ktexlib::KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 {
 	//constexpr unsigned int head = 0x5845544B;
 	cout << "Generating KTEXFirstBlock..." << endl;
@@ -110,7 +110,7 @@ inline void KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 
 
 
-bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
+bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 {
 	cout << "Convert Start." << endl;
 	using namespace lodepng;
@@ -122,14 +122,14 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	mipmap.pdata = new uc_vector;
 	if (wide > USHRT_MAX || height > USHRT_MAX)
 	{
-		throw std::out_of_range("KTEXFileOperation::KTEXFile::ConvertFromPNG 图片宽/高超过65535");
+		throw std::out_of_range("ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG 图片宽/高超过65535");
 	}
 	
 	ofstream ofstex(output,ios::binary|ios::trunc);
 	if(!ofstex.is_open())
 	{
 		cout << "output failure" << endl;
-		std::runtime_error("KTEXFileOperation::KTEXFile::ConvertFromPNG 打开失败");
+		std::runtime_error("ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG 打开失败");
 	}
 	unsigned int* p_imgvec = (unsigned int*)image.data();
 	for (unsigned short y = 0; y < height/2; y++)
@@ -165,7 +165,7 @@ bool KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	return true;
 }
 
-void __fastcall KTEXFileOperation::KTEXFile::LoadPNG(string Input)
+void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(string Input)
 {
 	cout << "Loading PNG file..." << endl;
 	output = Input;

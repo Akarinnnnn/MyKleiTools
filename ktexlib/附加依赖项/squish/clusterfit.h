@@ -1,6 +1,7 @@
 /* -----------------------------------------------------------------------------
 
 	Copyright (c) 2006 Simon Brown                          si@sjbrown.co.uk
+	Copyright (c) 2007 Ignacio Castano                   icastano@nvidia.com
 
 	Permission is hereby granted, free of charge, to any person obtaining
 	a copy of this software and associated documentation files (the 
@@ -23,19 +24,38 @@
 	
    -------------------------------------------------------------------------- */
    
-#ifndef SQUISH_ALPHA_H
-#define SQUISH_ALPHA_H
+#ifndef SQUISH_CLUSTERFIT_H
+#define SQUISH_CLUSTERFIT_H
 
-#include <squish.h>
+#include "squish.h"
+#include "maths.h"
+#include "simd.h"
+#include "colourfit.h"
 
 namespace squish {
 
-void CompressAlphaDxt3( u8 const* rgba, int mask, void* block );
-void CompressAlphaDxt5( u8 const* rgba, int mask, void* block );
+class ClusterFit : public ColourFit
+{
+public:
+	ClusterFit( ColourSet const* colours, int flags );
+	
+private:
+	bool ConstructOrdering( Vec3 const& axis, int iteration );
 
-void DecompressAlphaDxt3( u8* rgba, void const* block );
-void DecompressAlphaDxt5( u8* rgba, void const* block );
+	virtual void Compress3( void* block );
+	virtual void Compress4( void* block );
+
+	enum { kMaxIterations = 8 };
+
+	int m_iterationCount;
+	Vec3 m_principle;
+	u8 m_order[16*kMaxIterations];
+	Vec4 m_points_weights[16];
+	Vec4 m_xsum_wsum;
+	Vec4 m_metric;
+	Vec4 m_besterror;
+};
 
 } // namespace squish
 
-#endif // ndef SQUISH_ALPHA_H
+#endif // ndef SQUISH_CLUSTERFIT_H

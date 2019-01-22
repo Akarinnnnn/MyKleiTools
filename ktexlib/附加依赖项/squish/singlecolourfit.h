@@ -23,32 +23,36 @@
 	
    -------------------------------------------------------------------------- */
    
-#ifndef SQUISH_RANGEFIT_H
-#define SQUISH_RANGEFIT_H
+#ifndef SQUISH_SINGLECOLOURFIT_H
+#define SQUISH_SINGLECOLOURFIT_H
 
-#include <squish.h>
+#include "squish.h"
 #include "colourfit.h"
-#include "maths.h"
 
 namespace squish {
 
 class ColourSet;
+struct SingleColourLookup;
 
-class RangeFit : public ColourFit
+class SingleColourFit : public ColourFit
 {
 public:
-	RangeFit( ColourSet const* colours, int flags );
+	SingleColourFit( ColourSet const* colours, int flags );
 	
 private:
 	virtual void Compress3( void* block );
 	virtual void Compress4( void* block );
 	
-	Vec3 m_metric;
+	void ComputeEndPoints( SingleColourLookup const* const* lookups );
+	
+	u8 m_colour[3];
 	Vec3 m_start;
 	Vec3 m_end;
-	float m_besterror;
+	u8 m_index;
+	int m_error;
+	int m_besterror;
 };
 
-} // squish
+} // namespace squish
 
-#endif // ndef SQUISH_RANGEFIT_H
+#endif // ndef SQUISH_SINGLECOLOURFIT_H

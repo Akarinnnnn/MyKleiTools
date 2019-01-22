@@ -23,36 +23,32 @@
 	
    -------------------------------------------------------------------------- */
    
-#ifndef SQUISH_COLOURSET_H
-#define SQUISH_COLOURSET_H
+#ifndef SQUISH_RANGEFIT_H
+#define SQUISH_RANGEFIT_H
 
-#include <squish.h>
+#include "squish.h"
+#include "colourfit.h"
 #include "maths.h"
 
 namespace squish {
 
-/*! @brief Represents a set of block colours
-*/
-class ColourSet
+class ColourSet;
+
+class RangeFit : public ColourFit
 {
 public:
-	ColourSet( u8 const* rgba, int mask, int flags );
-
-	int GetCount() const { return m_count; }
-	Vec3 const* GetPoints() const { return m_points; }
-	float const* GetWeights() const { return m_weights; }
-	bool IsTransparent() const { return m_transparent; }
-
-	void RemapIndices( u8 const* source, u8* target ) const;
-
+	RangeFit( ColourSet const* colours, int flags );
+	
 private:
-	int m_count;
-	Vec3 m_points[16];
-	float m_weights[16];
-	int m_remap[16];
-	bool m_transparent;
+	virtual void Compress3( void* block );
+	virtual void Compress4( void* block );
+	
+	Vec3 m_metric;
+	Vec3 m_start;
+	Vec3 m_end;
+	float m_besterror;
 };
 
-} // namespace sqish
+} // squish
 
-#endif // ndef SQUISH_COLOURSET_H
+#endif // ndef SQUISH_RANGEFIT_H

@@ -3,16 +3,12 @@
 
 #include "pch.h"
 #include <iostream>
-#include <filesystem>
-
-
-
 #include "..\ktexlib\TEXFileOperation.h"
 
 //#define FUNCTEST//测试开关
 
 using namespace std;
-using namespace KTEXFileOperation;
+using namespace ktexlib::KTEXFileOperation;
 
 #ifndef FUNCTEST
 int main(int argc, const char* argv[])
@@ -37,7 +33,7 @@ int main(int argc, const char* argv[])
 			ktex.output = argv[2];
 			break;
 		default:
-			cout << "Usage: mypng PNG KTEX(Optional)" << endl << "Input filename to contiue" << endl;
+			cout << "Invalid argument.\nUsage: mypng PNG KTEX(Optional)" << endl << "Input filename to contiue" << endl;
 			cin >> input;
 			ktex.LoadPNG(input);
 			break;
@@ -56,26 +52,6 @@ int main(int argc, const char* argv[])
 #else
 int main()
 {
-	auto height = 2;
-	auto wide = 2;
-	unsigned char p_imgvec[16] =
-	{ 
-	1,2,3,4,  5,6,7,8,
 
-	9,10,11,12,  13,14,15,16
-	};
-
-	for (unsigned short y = 0; y < height; y++)
-	{
-		auto curline = (unsigned int*)p_imgvec + (y * wide);
-		auto tgtline = (unsigned int*)p_imgvec + ((height - y - 1)*wide);
-		for (unsigned short x = 0; x < wide; x++)
-		{
-			unsigned int temp = *(tgtline + x);
-			*(tgtline + x) = *(curline + x);
-			*(curline + x) = temp;
-		}
-	}
-	return 0;
 }
 #endif // FUNCTEST

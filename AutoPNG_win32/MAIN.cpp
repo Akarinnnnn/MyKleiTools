@@ -4,7 +4,7 @@
 #include "pch.h"
 #include <iostream>
 #include <regex>
-#include <filesystem>
+#include <filesystem>//MSVC特色，G++自己改一下
 #include <thread>
 #include <exception>
 #include <system_error>
@@ -28,6 +28,7 @@ bool convert_func(vector<string>& str)
 	{
 		if (str.empty())
 		{
+			mutex.unlock();
 			return true;
 		}
 		pngfile = *(str.end()-1);
@@ -39,7 +40,7 @@ bool convert_func(vector<string>& str)
 		return false;
 	}
 
-	KTEXFileOperation::KTEXFile KTEX;
+	ktexlib::KTEXFileOperation::KTEXFile KTEX;
 	KTEX.LoadPNG(pngfile);
 	KTEX.ConvertFromPNG();
 	return false;
@@ -48,6 +49,7 @@ bool convert_func(vector<string>& str)
 int main()
  {
 	MACROSETLOCALE;
+	////////////////////这里也改一下，改成std::experemental:filesystem/////////////////////////
 	using namespace std::filesystem;
 	unsigned long buffiersize = MAX_PATH;
 	regex PNGsuffix("(.*)(.png)", regex_constants::icase);
@@ -57,49 +59,76 @@ int main()
 	wstring modspath(GameBinPath);
 	modspath += L"\\..\\..\\mods\\";
 	path mods(modspath);
-	
-	vector<string> KTEXpaths;
-	KTEXpaths.reserve(40);
+	char num_of_proc[4]{ 0 };
+	unsigned char 处理器数量 = 0;
+	if (GetEnvironmentVariableA("NUMBER_OF_PROCESSORS", num_of_proc, 4))
+	{
+		处理器数量 = atoi(num_of_proc); 
+	}
+	else
+	{
+		cout << "获取处理器数量失败，转换线程将只有一个" << endl;
+		处理器数量 = 1;
+	}
+	vector<string> PNGs;
+	PNGs.reserve(40);
 	bool all_clear = false;
 	cout << "开始遍历文件" << endl;
-	for (auto &diriter : recursive_directory_iterator(mods))
+	for (auto dir : directory_iterator(mods))
 	{
-try
-{		auto dir = diriter;
-		if(dir.is_regular_file() 
-			&& dir.exists() 
-			&& dir.path().has_filename() 
-			&& regex_search(dir.path().filename().string(), PNGsuffix))
+		if (dir.is_directory())
 		{
-			auto canonicalpath = canonical(dir.path());
-			cout << canonicalpath.string() << endl;
-			KTEXpaths.push_back(canonicalpath.string());
+			try
+			{
+				auto images = canonical(dir.path()) / "images";
+				for (auto entries : recursive_directory_iterator(images))
+				{
+					if (entries.is_regular_file() &&
+						regex_match(entries.path().filename().string(), PNGsuffix)
+						)
+					{
+						PNGs.push_back(entries.path().string());
+					}
+				}
+			}
+			catch (std::filesystem::filesystem_error e)
+			{
+				int errcode = e.code().value();
+				if(errcode == 3)
+				{ }
+				else
+				{
+					cerr << e.what() << endl;
+				}
+			}
+			catch (system_error e)
+			{
+				cerr << e.what() << endl;
+				if (e.code().value() == 1113)
+				{
+					cout << "文件/文件夹名乱码，这是不行的" << endl;
+
+					cout << "这是大概的名字，搜索出来改个名字或者删掉吧" << endl;
+				}
+			}
+			catch (exception e)
+			{
+				cerr << e.what() << endl;
+			}
+			catch (...)
+			{
+				terminate();
+			}
 		}
-}
-catch(std::filesystem::filesystem_error e)
-{
-	cerr << e.what() << endl;
-}
-catch (system_error e)
-{
-	cerr << e.what() << endl;
-	if (e.code().value() == 1113)
-	{	
-		cout << "文件/文件夹名乱码，这是不行的" << endl;
-		wcout << diriter.path().filename().wstring() << endl;
-		cout << "这是大概的名字，搜索出来改个名字或者删掉吧" << endl;
+
 	}
-}
-catch (std::exception e)
-{
-	cerr << e.what() << endl;
-}
-	}
-	//std::thread converters[16];//max 16 threads
+	//std::thread converters[16];//上限16线程
+	vector<bool> converter_status(处理器数量);
+	
 	cout << "开始转换" << endl;
 	while (!all_clear)
 	{
-		all_clear = convert_func(KTEXpaths);
+		all_clear = convert_func(PNGs);
 	}
 	//想搞多线程
 	

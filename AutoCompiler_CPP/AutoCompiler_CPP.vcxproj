@@ -73,20 +73,20 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)ktexlib\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)附加依赖项\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(ProjectDir)ExternalLibrary\;$(LibraryPath)</LibraryPath>
-    <IncludePath>$(ProjectDir)squish\;$(ProjectDir)lodepng\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)附加依赖项\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)ktexlib\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)附加依赖项\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)squish\;$(ProjectDir)lodepng\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)附加依赖项\;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)ExternalLibrary\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -183,9 +183,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ispowerof2.asm" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ktexlib\ktexlib.vcxproj">

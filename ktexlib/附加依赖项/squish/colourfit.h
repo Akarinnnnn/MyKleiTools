@@ -23,19 +23,31 @@
 	
    -------------------------------------------------------------------------- */
    
-#ifndef SQUISH_COLOURBLOCK_H
-#define SQUISH_COLOURBLOCK_H
+#ifndef SQUISH_COLOURFIT_H
+#define SQUISH_COLOURFIT_H
 
-#include <squish.h>
+#include "squish.h"
 #include "maths.h"
 
 namespace squish {
 
-void WriteColourBlock3( Vec3::Arg start, Vec3::Arg end, u8 const* indices, void* block );
-void WriteColourBlock4( Vec3::Arg start, Vec3::Arg end, u8 const* indices, void* block );
+class ColourSet;
 
-void DecompressColour( u8* rgba, void const* block, bool isDxt1 );
+class ColourFit
+{
+public:
+	ColourFit( ColourSet const* colours, int flags );
+
+	void Compress( void* block );
+
+protected:
+	virtual void Compress3( void* block ) = 0;
+	virtual void Compress4( void* block ) = 0;
+
+	ColourSet const* m_colours;
+	int m_flags;
+};
 
 } // namespace squish
 
-#endif // ndef SQUISH_COLOURBLOCK_H
+#endif // ndef SQUISH_COLOURFIT_H

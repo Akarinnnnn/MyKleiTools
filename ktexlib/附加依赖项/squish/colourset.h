@@ -23,36 +23,36 @@
 	
    -------------------------------------------------------------------------- */
    
-#ifndef SQUISH_SINGLECOLOURFIT_H
-#define SQUISH_SINGLECOLOURFIT_H
+#ifndef SQUISH_COLOURSET_H
+#define SQUISH_COLOURSET_H
 
-#include <squish.h>
-#include "colourfit.h"
+#include "squish.h"
+#include "maths.h"
 
 namespace squish {
 
-class ColourSet;
-struct SingleColourLookup;
-
-class SingleColourFit : public ColourFit
+/*! @brief Represents a set of block colours
+*/
+class ColourSet
 {
 public:
-	SingleColourFit( ColourSet const* colours, int flags );
-	
+	ColourSet( u8 const* rgba, int mask, int flags );
+
+	int GetCount() const { return m_count; }
+	Vec3 const* GetPoints() const { return m_points; }
+	float const* GetWeights() const { return m_weights; }
+	bool IsTransparent() const { return m_transparent; }
+
+	void RemapIndices( u8 const* source, u8* target ) const;
+
 private:
-	virtual void Compress3( void* block );
-	virtual void Compress4( void* block );
-	
-	void ComputeEndPoints( SingleColourLookup const* const* lookups );
-	
-	u8 m_colour[3];
-	Vec3 m_start;
-	Vec3 m_end;
-	u8 m_index;
-	int m_error;
-	int m_besterror;
+	int m_count;
+	Vec3 m_points[16];
+	float m_weights[16];
+	int m_remap[16];
+	bool m_transparent;
 };
 
-} // namespace squish
+} // namespace sqish
 
-#endif // ndef SQUISH_SINGLECOLOURFIT_H
+#endif // ndef SQUISH_COLOURSET_H
