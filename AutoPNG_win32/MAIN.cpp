@@ -6,6 +6,7 @@
 #include <regex>
 #include <filesystem>//MSVC特色，G++自己改一下
 #include <thread>
+#include <atomic>
 #include <exception>
 #include <system_error>
 #include <mutex>
@@ -23,30 +24,30 @@
 //可能的注册表项: HKEY_CURRENT_USER\System\GameConfigStore\Children\2c1ae850-e27e-4f10-a985-2dd951d15ba4
 //
 using namespace std;
-void convert_func(vector<string>& str,unsigned short& statuses,unsigned char converterID)
+void convert_func(vector<string>& str,unsigned long long& statuses,unsigned char converterID)
 {
 	mutex mutex;
 	string pngfile;
 	bool status=false;
 	while (!status)
 	{
-		if (mutex.try_lock())
+		mutex.lock();
+		if (str.empty())
 		{
-			if (str.empty())
-			{
-				mutex.unlock();
-				status = true;
-				continue;
-			}
-			pngfile = *(str.end() - 1);
-			str.pop_back();
 			mutex.unlock();
+			status = true;
+			continue;
 		}
+
+		pngfile = *(str.end() - 1);
+		str.pop_back();
+		mutex.unlock();
+
 		ktexlib::KTEXFileOperation::KTEXFile KTEX;
 		KTEX.LoadPNG(pngfile);
 		KTEX.ConvertFromPNG();
 	}
-	statuses |= (1 << converterID);
+	statuses |= (1i64 << converterID);
 }
 
 int main()
@@ -92,17 +93,17 @@ int main()
 					}
 				}
 			}
-			catch (std::filesystem::filesystem_error e)
+			catch (std::filesystem::filesystem_error& e)
 			{
 				int errcode = e.code().value();
-				if(errcode == 3)
-				{ }
+				if (errcode == 3)//就是单纯的找不到文件 
+				{} 
 				else
 				{
 					cerr << e.what() << endl;
 				}
 			}
-			catch (system_error e)
+			catch (system_error& e)
 			{
 				cerr << e.what() << endl;
 				if (e.code().value() == 1113)
@@ -112,7 +113,7 @@ int main()
 					cout << "这是大概的名字，搜索出来改个名字或者删掉吧" << endl;
 				}
 			}
-			catch (exception e)
+			catch (exception& e)
 			{
 				cerr << e.what() << endl;
 			}
@@ -126,19 +127,22 @@ int main()
 	
 	cout << "开始转换" << endl;
 
-	unsigned short clear_status = 0;
-	unsigned short converter_status = 0;
+	unsigned long long clear_status = 0;
+	unsigned long long converter_status = 0;
 	auto cpuscount = thread::hardware_concurrency();
-	for (unsigned char i = 0; i < cpuscount; i++)
+	for (unsigned char i = 0; i < cpuscount && i<64 ; i++)
+	//for(int i=0;i==0;i++)
 	{
-		clear_status |= (1 << i);
+		clear_status |= (1i64 << i);
 		thread converter(convert_func,ref(PNGs), ref(converter_status), i);
 		converter.detach();
 	}
-	
-	while (converter_status ^clear_status)//^ = xor
-	{
+	//exception_ptr pexcetion();
 
+	//a^b = xor a b，挂机等和
+	while (converter_status ^ clear_status)
+	{
+		Sleep(1000);
 	}
 	cout << "完成" << endl;
 

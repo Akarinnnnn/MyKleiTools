@@ -174,26 +174,34 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	lock.lock();
 	cout << output << "\nDone.\n" << endl;
 	lock.unlock();
+
 	ofstex.close();
 	return true;
 }
 
-void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(string Input)
+void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(string I,string O)
 {
 #ifndef MULTI_THREAD_KTEXCONOUTPUT
 	cout << "Loading PNG file..." << endl;
+	cout << I << endl;
 #endif
-	output = Input;
-	cout << Input << endl;
-	auto iter = output.end();
-	*(iter - 1) = 'x';
-	*(iter - 2) = 'e';
-	*(iter - 3) = 't';
-	int err = lodepng::load_file(this->vecPNG, Input);
-	if (err != 0)
+	output = I;
+	if (O == "")
+	{
+		auto iter = output.end();
+		*(iter - 1) = 'x';
+		*(iter - 2) = 'e';
+		*(iter - 3) = 't';
+	}
+	int err = lodepng::load_file(this->vecPNG, I);
+	if (err == 28)
+	{
+		cout << "at" + I + ",\n" << lodepng_error_text(28) << endl;
+	}
+	/*if (err != 0)
 	{
 		string what = "lodepng error,";
 		what += lodepng_error_text(err);
 		throw std::exception(what.c_str());
-	}
+	}*/
 }

@@ -70,7 +70,7 @@ namespace ktexlib
 		{
 		public:
 			bool ConvertFromPNG();
-			void __fastcall LoadPNG(std::string InputPngFileName);//使用lodepng 
+			void __fastcall LoadPNG(std::string InputPngFileName, std::string output = "");//使用lodepng 
 			//KTEXFile(std::string InputKtexFileName);//加载 KTEX,没弄好
 			KTEXFile();
 			~KTEXFile();
