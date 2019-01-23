@@ -157,7 +157,7 @@ int wmain(int argc,wchar_t* argv[])
 	unsigned long long clear_status = 0;
 	unsigned long long converter_status = 0;
 	auto cpuscount = thread::hardware_concurrency();
-	/*for (unsigned char i = 0; i < cpuscount && i<64 ; i++)
+	for (unsigned char i = 0; i < cpuscount && i<64 ; i++)
 	//for(int i=0;i==0;i++)
 	{
 		clear_status |= (1i64 << i);
@@ -170,11 +170,6 @@ int wmain(int argc,wchar_t* argv[])
 	while (converter_status ^ clear_status)
 	{
 		Sleep(1000);
-	}*/
-
-	convert_func(PNGs, converter_status, 0);
-	{
-		Sleep(500);
 	}
 	cout << "完成" << endl;
 
