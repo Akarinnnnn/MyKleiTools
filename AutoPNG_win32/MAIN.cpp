@@ -24,24 +24,30 @@
 //可能的注册表项: HKEY_CURRENT_USER\System\GameConfigStore\Children\2c1ae850-e27e-4f10-a985-2dd951d15ba4
 //
 using namespace std;
+
+namespace MAIN
+{
+	std::mutex mutex;
+	std::vector<string> PNGs;
+}
 void convert_func(vector<string>& str,unsigned long long& statuses,unsigned char converterID)
 {
-	mutex mutex;
+	
 	string pngfile;
 	bool status=false;
 	while (!status)
 	{
-		mutex.lock();
+		MAIN::mutex.lock();
 		if (str.empty())
 		{
-			mutex.unlock();
+			MAIN::mutex.unlock();
 			status = true;
 			continue;
 		}
 
 		pngfile = *(str.end() - 1);
 		str.pop_back();
-		mutex.unlock();
+		MAIN::mutex.unlock();
 
 		ktexlib::KTEXFileOperation::KTEXFile KTEX;
 		KTEX.LoadPNG(pngfile);
@@ -50,18 +56,42 @@ void convert_func(vector<string>& str,unsigned long long& statuses,unsigned char
 	statuses |= (1i64 << converterID);
 }
 
-int main()
+int wmain(int argc,wchar_t* argv[])
  {
 	MACROSETLOCALE;
-	////////////////////G++这里也改一下，改成std::experemental:filesystem/////////////////////////
+	////////////////////G++这里也改一下，改成std::experimental::filesystem/////////////////////////
 	using namespace std::filesystem;
+	using namespace MAIN;
 	unsigned long buffiersize = MAX_PATH;
 	regex PNGsuffix("(.*)(.png)", regex_constants::icase);
+	wstring modspath;
 	wchar_t GameBinPath[MAX_PATH]{ 0 };
-	RegGetValueW(HKEY_CURRENT_USER, L"System\\GameConfigStore\\Children\\2c1ae850-e27e-4f10-a985-2dd951d15ba4", L"MatchedExeFullPath",
-		RRF_RT_ANY, NULL, GameBinPath, &buffiersize);
-	wstring modspath(GameBinPath);//Linux玩家可以改成常量或者cin
-	modspath += L"\\..\\..\\mods\\";
+	switch (argc)
+	{
+	case(1):
+		//Linux直接把case(1)去掉
+		RegGetValueW(HKEY_CURRENT_USER, L"System\\GameConfigStore\\Children\\2c1ae850-e27e-4f10-a985-2dd951d15ba4", L"MatchedExeFullPath",
+			RRF_RT_ANY, NULL, GameBinPath, &buffiersize);
+		modspath = GameBinPath;
+		modspath += L"\\..\\..\\mods\\";
+		break;
+	case(2):
+		if (*argv[1] == L't' || *argv[1] == L'T')
+		{
+			modspath = argv[0];
+		}
+		else
+		{
+			cout << "输入mods文件夹的路径：" << endl;
+			getline(wcin, modspath);
+		}
+		break;
+	default:
+		cout << "输入mods文件夹的路径：" << endl;
+		getline(wcin, modspath);
+		break;
+	}
+
 	path mods(modspath);
 	/*char num_of_proc[5]{ 0 };
 	if (GetEnvironmentVariableA("NUMBER_OF_PROCESSORS", num_of_proc, 4))
@@ -73,7 +103,6 @@ int main()
 		cout << "获取处理器数量失败，转换线程将只有一个" << endl;
 		num_of_proc[4] = 1;
 	}*/
-	vector<string> PNGs;
 	PNGs.reserve(40);
 	cout << "开始遍历文件" << endl;
 	for (auto dir : directory_iterator(mods))
@@ -108,9 +137,7 @@ int main()
 				cerr << e.what() << endl;
 				if (e.code().value() == 1113)
 				{
-					cout << "文件/文件夹名乱码，这是不行的" << endl;
-
-					cout << "这是大概的名字，搜索出来改个名字或者删掉吧" << endl;
+					cout << "文件/文件夹名乱码" << endl;
 				}
 			}
 			catch (exception& e)
@@ -139,28 +166,19 @@ int main()
 	}
 	//exception_ptr pexcetion();
 
-	//a^b = xor a b，挂机等和
+	//a^b = xor a b，挂机等
 	while (converter_status ^ clear_status)
 	{
 		Sleep(1000);
 	}*/
 
 	convert_func(PNGs, converter_status, 0);
+	{
+		Sleep(500);
+	}
 	cout << "完成" << endl;
 
 	//在搞多线程
 	
 }
 
-
-
-// 运行程序: Ctrl + F5 或调试 >“开始执行(不调试)”菜单
-// 调试程序: F5 或调试 >“开始调试”菜单
-
-// 入门提示: 
-//   1. 使用解决方案资源管理器窗口添加/管理文件
-//   2. 使用团队资源管理器窗口连接到源代码管理
-//   3. 使用输出窗口查看生成输出和其他消息
-//   4. 使用错误列表窗口查看错误
-//   5. 转到“项目”>“添加新项”以创建新的代码文件，或转到“项目”>“添加现有项”以将现有代码文件添加到项目
-//   6. 将来，若要再次打开此项目，请转到“文件”>“打开”>“项目”并选择 .sln 文件
