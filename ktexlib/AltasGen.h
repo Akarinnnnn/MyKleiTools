@@ -17,7 +17,7 @@ namespace ktexlib
 			unsigned short w, h = 0;
 		};
 		void Atlas(imgvec imgs, std::string output, unsigned int max_altas_size = 2048,unsigned short scale_factor=1);//鸽了，官方python的Atlas()甚至能生成模型
-		void AtlasDocumentGen(std::wstring filename, bbox, ldb offset = 0.5);
+		void AtlasDocumentGen(std::wstring filename, bbox, double offset = 0.5);
 	}
 
 }

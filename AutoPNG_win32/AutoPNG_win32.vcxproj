@@ -170,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
+    <ClInclude Include="stringslist_CHS.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ktexlib\ktexlib.vcxproj">

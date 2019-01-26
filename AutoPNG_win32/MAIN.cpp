@@ -2,25 +2,24 @@
 //
 
 #include "pch.h"
+#include "stringslist_CHS.h"
+
+//STL
 #include <iostream>
 #include <regex>
-#include <filesystem>//MSVC特色，G++要改一下
+#include <filesystem>//MSVC特色
 #include <thread>
 #include <atomic>
 #include <exception>
 #include <system_error>
 #include <mutex>
-#include "windows.h"
-
+//Win32
+#ifdef _WIN32
+#include "windows.h"//Linux把这个去了
+#endif
 #define MULTI_THREAD_KTEXCONOUTPUT
 #include "..\ktexlib\TEXFileOperation.h"
 
-
-#ifdef _WIN32
-#define MACROSETLOCALE setlocale(LC_ALL, "Chinese_People's Republic of China.936")
-#else
-#define MACROSETLOCALE setlocale(LC_ALL, "zh_CN.GBK")
-#endif
 //可能的注册表项: HKEY_CURRENT_USER\System\GameConfigStore\Children\2c1ae850-e27e-4f10-a985-2dd951d15ba4
 //
 using namespace std;
@@ -32,7 +31,7 @@ namespace MAIN
 }
 void convert_func(vector<string>& str,unsigned long long& statuses,unsigned char converterID)
 {
-	
+	MACROSETLOCALE;
 	string pngfile;
 	bool status=false;
 	while (!status)
@@ -59,52 +58,69 @@ void convert_func(vector<string>& str,unsigned long long& statuses,unsigned char
 int wmain(int argc,wchar_t* argv[])
  {
 	MACROSETLOCALE;
-	////////////////////G++这里也改一下，改成std::experimental::filesystem/////////////////////////
+	////////////////////也是MSVC特色/////////////////////////
 	using namespace std::filesystem;
 	using namespace MAIN;
 	unsigned long buffiersize = MAX_PATH;
 	regex PNGsuffix("(.*)(.png)", regex_constants::icase);
 	wstring modspath;
 	wchar_t GameBinPath[MAX_PATH]{ 0 };
+	bool 清理 = false;
 	switch (argc)
 	{
 	case(1):
-		//Linux直接把case(1)去掉
+		//Linux直接把case(1)这块去掉
 		RegGetValueW(HKEY_CURRENT_USER, L"System\\GameConfigStore\\Children\\2c1ae850-e27e-4f10-a985-2dd951d15ba4", L"MatchedExeFullPath",
 			RRF_RT_ANY, NULL, GameBinPath, &buffiersize);
 		modspath = GameBinPath;
 		modspath += L"\\..\\..\\mods\\";
 		break;
 	case(2):
-		if (*argv[1] == L't' || *argv[1] == L'T')
+		switch (argv[1][0])//其实是有空子可以钻的，比如说txsb进case t，cnm进case c,不过并没什么diao用就是了
 		{
+		case(L't'):
 			modspath = argv[0];
-		}
-		else
-		{
-			cout << "输入mods文件夹的路径：" << endl;
-			getline(wcin, modspath);
+			break;
+		case(L'c'):
+			std::wcout << s1 << endl
+				<< s2 << endl;
+			std::getline(wcin, modspath);
+			清理 = true;
+			break;
+		default:
+			break;
 		}
 		break;
 	default:
-		cout << "输入mods文件夹的路径：" << endl;
-		getline(wcin, modspath);
+		std::wcout << s3 << endl;
+		std::getline(wcin, modspath);
 		break;
 	}
 
 	path mods(modspath);
-	/*char num_of_proc[5]{ 0 };
-	if (GetEnvironmentVariableA("NUMBER_OF_PROCESSORS", num_of_proc, 4))
+	//清理
+	if (清理)
 	{
-		num_of_proc[4] = atoi(num_of_proc); 
+		std::wcout << s4 << endl;
+		for (auto dir : recursive_directory_iterator(mods))
+		{
+			if (dir.is_regular_file())
+			{
+				auto filepath = dir.path();
+				if (regex_match(filepath.filename().string(), regex("(.*)(.tex)", regex::icase)))
+				{
+					const wstring file = canonical(filepath).wstring();
+					std::wcout << file << endl;
+					/////////////WINAPI/////////////
+					DeleteFileW(file.c_str());
+				}
+			}
+		}
+		return 1;
 	}
-	else
-	{
-		cout << "获取处理器数量失败，转换线程将只有一个" << endl;
-		num_of_proc[4] = 1;
-	}*/
+
 	PNGs.reserve(40);
-	cout << "开始遍历文件" << endl;
+	std::wcout << s5 << endl;
 	for (auto dir : directory_iterator(mods))
 	{
 		if (dir.is_directory())
@@ -137,7 +153,7 @@ int wmain(int argc,wchar_t* argv[])
 				cerr << e.what() << endl;
 				if (e.code().value() == 1113)
 				{
-					cout << "文件/文件夹名乱码" << endl;
+					std::wcout << s6 << endl;
 				}
 			}
 			catch (exception& e)
@@ -152,7 +168,7 @@ int wmain(int argc,wchar_t* argv[])
 
 	}
 	
-	cout << "开始转换" << endl;
+	std::wcout << s7 << endl;
 
 	unsigned long long clear_status = 0;
 	unsigned long long converter_status = 0;
@@ -171,7 +187,8 @@ int wmain(int argc,wchar_t* argv[])
 	{
 		Sleep(1000);
 	}
-	cout << "完成" << endl;
+	std::wcout << s8 << endl;
+	return 0;
 
 	//在搞多线程
 	

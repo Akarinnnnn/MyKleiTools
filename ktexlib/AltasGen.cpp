@@ -8,15 +8,15 @@ void ktexlib::AtlasGen::Atlas(imgvec imgs, string output, unsigned int max_altas
 }
 
 
-void ktexlib::AtlasGen::AtlasDocumentGen(wstring filename, bbox bbox, ldb offset = 0.5)
+void ktexlib::AtlasGen::AtlasDocumentGen(wstring filename, bbox bbox, double offset)
 {
 	using namespace pugi;
 
-	ofstream fsXML(filename);
-	if (fsXML.is_open())
+	/*ofstream fsXML(filename);
+	if (!fsXML.is_open())
 	{
 		cout << "´ò¿ªÊ§°Ü" << endl;
-	}
+	}*/
 
 	xml_document AtlasXMLDocument;
 	auto Atlas = AtlasXMLDocument.append_child(L"Atlas");
@@ -27,6 +27,8 @@ void ktexlib::AtlasGen::AtlasDocumentGen(wstring filename, bbox bbox, ldb offset
 
 		auto Elements = Atlas.append_child(L"Elements");
 			auto Element = Elements.append_child(L"Element");
+				auto e_name = Element.append_attribute(L"name");
+					e_name.as_string(filename.c_str());
 				auto e_u1 = Element.append_attribute(L"u1");
 				auto e_u2 = Element.append_attribute(L"u2");
 				auto e_v1 = Element.append_attribute(L"v1");
@@ -36,14 +38,15 @@ void ktexlib::AtlasGen::AtlasDocumentGen(wstring filename, bbox bbox, ldb offset
 	double offsets[2]{ offset };//0¡úx, 1¡úy
 	double UVs[4]{ 0 };//0~4 u1,u2,v1,v2
 	
+
+
 	/*
 	python lambda
 	lambda arg:func
 
 	C++ lambda
-	[](arg){func}
+	[arg]{func}
 	*/
 
-	fsXML << AtlasXMLDocument;
-	fsXML.close();
+	AtlasXMLDocument.save_file(filename.c_str(), L"\t", 1, pugi::encoding_utf8);
 }

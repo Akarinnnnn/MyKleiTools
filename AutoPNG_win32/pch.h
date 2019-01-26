@@ -11,9 +11,9 @@
 
 // TODO: 添加要在此处预编译的标头
 #ifdef _WIN32
-#define MACROSETLOCALE setlocale(LC_ALL, "Chinese_People's Republic of China.936")
+#define MACROSETLOCALE setlocale(LC_ALL, "Chinese_People's Republic of China.936");wcout.imbue(locale("chs"))
 #else
-#define MACROSETLOCALE setlocale(LC_ALL, "zh_CN.GBK")
+#define MACROSETLOCALE setlocale(LC_ALL, "zh_CN.GBK");wcout.imbue(locale("chs"))
 #endif
 
 #endif //PCH_H
