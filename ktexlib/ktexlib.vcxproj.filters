@@ -31,53 +31,14 @@
     <Filter Include="头文件\ktexlib">
       <UniqueIdentifier>{7854758c-de32-45bb-9667-900285acbd4b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="源文件\pugixml">
+      <UniqueIdentifier>{28edb579-51a8-424d-b421-1b0c6ece3be2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\pugixml">
+      <UniqueIdentifier>{7b1b2747-d17e-45b3-8157-a8a01aa2ea3f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="附加依赖项\squish\alpha.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\clusterfit.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\colourblock.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\colourfit.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\colourset.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\config.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\maths.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\rangefit.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\simd.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\simd_float.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\simd_sse.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\simd_ve.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\singlecolourfit.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\squish\squish.h">
-      <Filter>头文件\squish</Filter>
-    </ClInclude>
-    <ClInclude Include="附加依赖项\lodepng\lodepng.h">
-      <Filter>头文件\lodepng</Filter>
-    </ClInclude>
     <ClInclude Include="TEXFileOperation.h">
       <Filter>头文件\ktexlib</Filter>
     </ClInclude>
@@ -87,47 +48,107 @@
     <ClInclude Include="stdafx.h">
       <Filter>头文件\ktexlib</Filter>
     </ClInclude>
+    <ClInclude Include="AltasGen.h">
+      <Filter>头文件\ktexlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\lodepng\lodepng.h">
+      <Filter>头文件\lodepng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\pugixml-1.9\src\pugiconfig.hpp">
+      <Filter>头文件\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\pugixml-1.9\src\pugixml.hpp">
+      <Filter>头文件\pugixml</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\alpha.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\clusterfit.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\colourblock.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\colourfit.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\colourset.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\config.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\maths.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\rangefit.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\simd.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\simd_float.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\simd_sse.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\simd_ve.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\singlecolourfit.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
+    <ClInclude Include="..\附加依赖项\squish\squish.h">
+      <Filter>头文件\squish</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="附加依赖项\squish\squish.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="附加依赖项\squish\alpha.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="附加依赖项\squish\clusterfit.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="附加依赖项\squish\colourblock.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="附加依赖项\squish\colourfit.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="附加依赖项\squish\colourset.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="附加依赖项\squish\maths.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="附加依赖项\squish\rangefit.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="附加依赖项\squish\singlecolourfit.cpp">
-      <Filter>源文件\squish</Filter>
-    </ClCompile>
-    <ClCompile Include="附加依赖项\lodepng\lodepng.cpp">
-      <Filter>源文件\lodepng</Filter>
-    </ClCompile>
     <ClCompile Include="TEXFileOperation.cpp">
       <Filter>源文件\ktexlib</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件\ktexlib</Filter>
     </ClCompile>
+    <ClCompile Include="AltasGen.cpp">
+      <Filter>源文件\ktexlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\pugixml-1.9\src\pugixml.cpp">
+      <Filter>源文件\pugixml</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\squish\alpha.cpp">
+      <Filter>源文件\squish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\squish\clusterfit.cpp">
+      <Filter>源文件\squish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\squish\colourblock.cpp">
+      <Filter>源文件\squish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\squish\colourfit.cpp">
+      <Filter>源文件\squish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\squish\colourset.cpp">
+      <Filter>源文件\squish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\squish\maths.cpp">
+      <Filter>源文件\squish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\squish\rangefit.cpp">
+      <Filter>源文件\squish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\squish\singlecolourfit.cpp">
+      <Filter>源文件\squish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\squish\squish.cpp">
+      <Filter>源文件\squish</Filter>
+    </ClCompile>
+    <ClCompile Include="..\附加依赖项\lodepng\lodepng.cpp">
+      <Filter>源文件\lodepng</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="附加依赖项\squish\singlecolourlookup.inl">
+    <None Include="..\附加依赖项\squish\singlecolourlookup.inl">
       <Filter>源文件\squish</Filter>
     </None>
   </ItemGroup>

@@ -5,8 +5,8 @@
 #include <iostream>
 #include <mutex>
 #include <exception>
-#include "lodepng/lodepng.h"
-#include "squish/squish.h"
+#include <lodepng/lodepng.h>
+#include <squish/squish.h>
 
 //多线程控制台输出
 #define MULTI_THREAD_KTEXCONOUTPUT

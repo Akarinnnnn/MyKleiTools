@@ -4,7 +4,7 @@
 #include "pch.h"
 #include <iostream>
 #include <regex>
-#include <filesystem>//MSVC特色，G++自己改一下
+#include <filesystem>//MSVC特色，G++要改一下
 #include <thread>
 #include <atomic>
 #include <exception>
