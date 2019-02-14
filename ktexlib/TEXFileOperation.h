@@ -83,7 +83,7 @@ namespace ktexlib
 			KTEXHeader Header;
 			KTEXInfo Info;
 		private:
-			unsigned int __fastcall KTEXMipmapGen(mipmap& target, uc_vector argb_image, unsigned short width, unsigned short height, unsigned short pitch);
+			size_t __fastcall KTEXMipmapGen(mipmap& target, uc_vector argb_image, unsigned short width, unsigned short height, unsigned short pitch);
 			void KTEXFirstBlockGen();
 			void __fastcall multimipmapgen(KTEXFileOperation::mipmap_vector mipmaps, imgs inputimgs);
 			std::fstream fsTEX;

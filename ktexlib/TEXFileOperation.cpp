@@ -56,7 +56,7 @@ void __fastcall ktexlib::KTEXFileOperation::KTEXFile::multimipmapgen(mipmap_vect
 
 }
 
-unsigned int __fastcall ktexlib::KTEXFileOperation::KTEXFile::KTEXMipmapGen(ktexlib::KTEXFileOperation::mipmap& target,uc_vector image,unsigned short wide,
+size_t __fastcall ktexlib::KTEXFileOperation::KTEXFile::KTEXMipmapGen(ktexlib::KTEXFileOperation::mipmap& target,uc_vector image,unsigned short wide,
 												unsigned short height,unsigned short Z)
 {
 #ifndef MULTI_THREAD_KTEXCONOUTPUT
