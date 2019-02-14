@@ -108,7 +108,7 @@ inline void ktexlib::KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 
 	firstblock |= 0xFFF;//自己写的有bug，干脆复制粘贴
 	firstblock <<= 2;
-	firstblock |= Info.flags;
+	firstblock |= (unsigned int)Info.flags;
 	firstblock <<= 5;
 	firstblock |= Info.mipscount;
 	firstblock <<= 4;
@@ -131,7 +131,7 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	using namespace lodepng;
 	State imgstate;
 	unsigned int wide, height;
-	decode(vec_mipmapdata, wide, height, imgstate, this->vecPNG);
+	decode(vec_rgba, wide, height, imgstate, this->vecPNG);
 	if (wide > USHRT_MAX || height > USHRT_MAX)
 	{
 		throw std::out_of_range("ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG 图片宽/高超过65535");
@@ -143,7 +143,7 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 		cout << "output failure" << endl;
 		std::runtime_error("ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG 打开失败");
 	}
-	unsigned int* p_imgvec = (unsigned int*)vec_mipmapdata.data();
+	unsigned int* p_imgvec = (unsigned int*)vec_rgba.data();
 	for (unsigned short y = 0; y < height/2; y++)
 	{
 		auto curline = (unsigned int*)p_imgvec + (y * wide);
@@ -163,7 +163,7 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	
 	//单mipmap,想了想gei慌好像用不到一个以上的mipmap
 
-	unsigned int datasize = KTEXMipmapGen(mipmap, vec_mipmapdata, wide, height, 0);
+	unsigned int datasize = KTEXMipmapGen(mipmap, vec_rgba, wide, height, 0);
 
 	//写入mipmap信息
 #ifndef MULTI_THREAD_KTEXCONOUTPUT
@@ -226,17 +226,17 @@ bool ktexlib::KTEXFileOperation::KTEXFile::LoadKTEX(std::wstring FileName)
 	mipmapinfile mipinfo;
 	uc_vector vec_mipmapdata;
 	file.read((char*)(&Header), 8);
-	filepos + 8;
+	filepos += 8;
 	if (Header.cc4 != 0x5445584B)
 		return false;
 	parseheader(Header, Info);
 	file.seekg(filepos);
 	file.read((char*)(&mipinfo), 12);
-	filepos + 12;
+	filepos += 12;
 	file.seekg(filepos);
 	vec_mipmapdata.resize(mipinfo.size);
 	file.read((char*)vec_mipmapdata.data(), mipinfo.size);
-	filepos + mipinfo.size;
+	filepos += mipinfo.size;
 
 	switch (Info.pixelformat)
 	{
