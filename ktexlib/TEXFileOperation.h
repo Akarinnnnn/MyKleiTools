@@ -1,4 +1,5 @@
 #pragma once
+//已经相当于祖传代码了，年代久远
 #include <string>
 #include <fstream>
 #include <vector>
@@ -8,6 +9,7 @@
 #include <lodepng/lodepng.h>
 #include <squish/squish.h>
 
+#include "AltasGen.h"
 //多线程控制台输出
 #define MULTI_THREAD_KTEXCONOUTPUT
 
@@ -17,7 +19,7 @@ namespace ktexlib
 	{
 		struct  //platform
 		{
-			char pc = 12;
+			char opengl = 12;
 			char xb360 = 11;
 			char ps3 = 10;
 			char unk = 0;
@@ -41,20 +43,20 @@ namespace ktexlib
 
 		struct KTEXHeader
 		{
-			const char ktexheader[4] = { 0x4B,0x54,0x45,0x58 };//文件头,"KTEX",用ACSII值表示
-			//数据
-			unsigned int flags = 0;
-			unsigned int mips = 1;
-			unsigned int texturetype = (unsigned int)textyp.d1;
-			unsigned int pixelformat = (unsigned int)pixfrm.DXT5;
-			unsigned int platform = (unsigned int)platfrm.pc;
-			//unsigned int remainder = 0;
-			//unsigned int remainder;
-			//end
+			//CC4
+			const unsigned int cc4 = 0x5845544B;
 			//第一数据块
-			unsigned int firstblock = 0xFFF00000;//结构见图KTEX_HEADER.bmp(灵魂画技警告)
-			//0x3FF 12bit, flags 2bit, mipscount 5bit, textype 4byte
+			unsigned int firstblock = 0xFFF00000;
+			//0xFFF 12bit, flags 2bit, mipscount 5bit, textype 4bit
 			//pixelformat 5bit, platform 4bit
+		};
+		struct KTEXInfo
+		{
+			bool flags = 0;
+			unsigned short mipscount = 0;
+			unsigned char texturetype = textyp.d1;
+			unsigned char pixelformat = pixfrm.DXT5;
+			unsigned int platform = platfrm.opengl;
 		};
 
 		struct mipmap
@@ -62,8 +64,9 @@ namespace ktexlib
 			unsigned short width = 0;
 			unsigned short height = 0;
 			unsigned short Z = 1;//Z Axis
-			uc_vector* pdata;
+			uc_vector data;
 		};
+
 		typedef std::vector<mipmap> mipmap_vector;
 		typedef std::vector<uc_vector> imgs;
 		class KTEXFile
@@ -71,21 +74,22 @@ namespace ktexlib
 		public:
 			bool ConvertFromPNG();
 			void __fastcall LoadPNG(std::string InputPngFileName, std::string output = "");//使用lodepng 
+			bool LoadKTEX(std::wstring FileName);
 			//KTEXFile(std::string InputKtexFileName);//加载 KTEX,没弄好
 			KTEXFile();
 			~KTEXFile();
 
-			std::string output;//输出文件位置
-
+			std::wstring output;//输出文件位置
 			KTEXHeader Header;
+			KTEXInfo Info;
 		private:
 			unsigned int __fastcall KTEXMipmapGen(mipmap& target, uc_vector argb_image, unsigned short width, unsigned short height, unsigned short pitch);
 			void KTEXFirstBlockGen();
 			void __fastcall multimipmapgen(KTEXFileOperation::mipmap_vector mipmaps, imgs inputimgs);
-
 			std::fstream fsTEX;
 			mipmap_vector vec_mipmaps;
 			imgs vec_imgs;
+			uc_vector vec_rgba;
 			uc_vector vecPNG;
 			mipmap mipmap;//暂时用着
 		};

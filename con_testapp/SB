@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<Atlas>
+	<Texture filename="SB" />
+	<Elements>
+		<Element name="SB" u1="0.5" u2="1" v1="0.5" v2="0" />
+	</Elements>
+</Atlas>

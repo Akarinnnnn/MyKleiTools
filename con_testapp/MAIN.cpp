@@ -8,5 +8,6 @@ int main()
 	{
 		0,0,2,2
 	};
-	AtlasDocumentGen(L"SB.xml", testbbox);
+	unsigned short size[2] = { 2,2 };
+	AtlasDocumentGen(L"SB",size , testbbox);
 }

@@ -30,7 +30,10 @@ int main(int argc, const char* argv[])
 		case(3):
 			cout << "input: " << argv[1] << endl;
 			ktex.LoadPNG(argv[1]);
-			ktex.output = argv[2];
+			auto buff = new wchar_t[_MAX_PATH];
+			mbstowcs(buff, argv[2], _MAX_PATH);
+			ktex.output = buff;
+			delete[] buff;
 			break;
 		default:
 			cout << "Invalid argument.\nUsage: mypng PNG KTEX(Optional)" << endl << "Input filename to contiue" << endl;
@@ -44,7 +47,7 @@ int main(int argc, const char* argv[])
 		cout << e.what() << endl;
 		return 100;
 	}
-	cout << "output: " << ktex.output << endl;
+	wcout << L"output: " << ktex.output << endl;
 	ktex.ConvertFromPNG();
 	return 0;
 

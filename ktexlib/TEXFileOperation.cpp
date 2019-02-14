@@ -15,6 +15,14 @@ inline bool ArrayCompare(T array1[], const T array2[], unsigned long long count)
 	return true;
 }
 
+struct mipmapinfile
+{
+	unsigned short x = 0;
+	unsigned short y = 0;
+	unsigned short z = 0;
+	unsigned int size = 0;
+};
+
 char* ReverseByByte(char* p, unsigned long long bytecount)//p强制转换就行
 {
 	char mid = 0;
@@ -31,14 +39,13 @@ using namespace std;
 
 ktexlib::KTEXFileOperation::KTEXFile::KTEXFile()
 {
+	wcout.imbue(locale("chs"));
 	Header.firstblock = 0;
-	mipmap.pdata = nullptr;
 }
 
 ktexlib::KTEXFileOperation::KTEXFile::~KTEXFile()
 {
 	fsTEX.close();
-	delete mipmap.pdata;
 }
 
 void __fastcall ktexlib::KTEXFileOperation::KTEXFile::multimipmapgen(mipmap_vector inputmip,imgs inputimg)
@@ -63,27 +70,27 @@ unsigned int __fastcall ktexlib::KTEXFileOperation::KTEXFile::KTEXMipmapGen(ktex
 #ifndef MULTI_THREAD_KTEXCONOUTPUT
 	cout << "Compressing..." << endl;
 #endif
-	switch (Header.pixelformat)//像素格式判断，压缩，写入mipmap数据
+	switch (Info.pixelformat)//像素格式判断，压缩，写入mipmap数据
 	{
 		using namespace squish;
 	case (pixfrm.ARGB):
-		*target.pdata = image;
+		target.data = image;
 		return image.size();
 		break;
 	case (pixfrm.DXT1):
-		target.pdata->resize(GetStorageRequirements(wide, height, kDxt1));
-		CompressImage(image.data(), wide, height, target.pdata->data(), kDxt1);
-		return target.pdata->size();
+		target.data.resize(GetStorageRequirements(wide, height, kDxt1));
+		CompressImage(image.data(), wide, height, target.data.data(), kDxt1);
+		return target.data.size();
 		break;
 	case (pixfrm.DXT3):
-		target.pdata->resize(GetStorageRequirements(wide, height, kDxt3));
-		CompressImage(image.data(), wide, height, target.pdata->data(), kDxt3);
-		return target.pdata->size();
+		target.data.resize(GetStorageRequirements(wide, height, kDxt3));
+		CompressImage(image.data(), wide, height, target.data.data(), kDxt3);
+		return target.data.size();
 		break;
 	case (pixfrm.DXT5):
-		target.pdata->resize(GetStorageRequirements(wide, height, kDxt5));
-		CompressImage(image.data(), wide, height, target.pdata->data(), kDxt5);
-		return target.pdata->size();
+		target.data.resize(GetStorageRequirements(wide, height, kDxt5));
+		CompressImage(image.data(), wide, height, target.data.data(), kDxt5);
+		return target.data.size();
 		break;
 	default:
 		throw std::invalid_argument("ktexlib::KTEXFileOperation::KTEXFile::KTEXMipmapGen 像素格式参数错误");
@@ -101,15 +108,15 @@ inline void ktexlib::KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 
 	firstblock |= 0xFFF;//自己写的有bug，干脆复制粘贴
 	firstblock <<= 2;
-	firstblock |= Header.flags;
+	firstblock |= Info.flags;
 	firstblock <<= 5;
-	firstblock |= Header.mips;
+	firstblock |= Info.mipscount;
 	firstblock <<= 4;
-	firstblock |= Header.texturetype;
+	firstblock |= Info.texturetype;
 	firstblock <<= 5;
-	firstblock |= Header.pixelformat;
+	firstblock |= Info.pixelformat;
 	firstblock <<= 4;
-	firstblock |= Header.platform;
+	firstblock |= Info.platform;
 
 	Header.firstblock=firstblock;
 }
@@ -122,12 +129,9 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	cout << "Convert Start." << endl;
 #endif
 	using namespace lodepng;
-	//namespace fs = std::filesystem;
-	uc_vector image;//RGBA
 	State imgstate;
 	unsigned int wide, height;
-	decode(image, wide, height, imgstate, this->vecPNG);
-	mipmap.pdata = new uc_vector;
+	decode(vec_mipmapdata, wide, height, imgstate, this->vecPNG);
 	if (wide > USHRT_MAX || height > USHRT_MAX)
 	{
 		throw std::out_of_range("ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG 图片宽/高超过65535");
@@ -139,7 +143,7 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 		cout << "output failure" << endl;
 		std::runtime_error("ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG 打开失败");
 	}
-	unsigned int* p_imgvec = (unsigned int*)image.data();
+	unsigned int* p_imgvec = (unsigned int*)vec_mipmapdata.data();
 	for (unsigned short y = 0; y < height/2; y++)
 	{
 		auto curline = (unsigned int*)p_imgvec + (y * wide);
@@ -159,7 +163,7 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	
 	//单mipmap,想了想gei慌好像用不到一个以上的mipmap
 
-	unsigned int datasize = KTEXMipmapGen(mipmap, image, wide, height, 0);
+	unsigned int datasize = KTEXMipmapGen(mipmap, vec_mipmapdata, wide, height, 0);
 
 	//写入mipmap信息
 #ifndef MULTI_THREAD_KTEXCONOUTPUT
@@ -169,11 +173,11 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	ofstex.write((char*)(&mipmap.height), 2);
 	ofstex.write((char*)(&mipmap.Z), 2);
 	ofstex.write((char*)(&datasize), 4);
-	ofstex.write((char*)mipmap.pdata->data(), datasize);
-	mutex lock;
-	lock.lock();
-	cout << output << "\nDone.\n" << endl;
-	lock.unlock();
+	ofstex.write((char*)mipmap.data.data(), datasize);
+	
+	ktexlib::AtlasGen::AtlasDocumentGen(output.c_str(), &(mipmap.width), { 0,0,mipmap.width,mipmap.height });
+
+	wcout << output << "\nDone.\n" << endl;
 
 	ofstex.close();
 	return true;
@@ -185,7 +189,7 @@ void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(string I,string O)
 	cout << "Loading PNG file..." << endl;
 	cout << I << endl;
 #endif
-	output = I;
+	output = wstring(I.begin(), I.end());//wdnm!
 	if (O == "")
 	{
 		auto iter = output.end();
@@ -204,4 +208,49 @@ void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(string I,string O)
 		what += lodepng_error_text(err);
 		throw std::exception(what.c_str());
 	}*/
+}
+
+inline void __fastcall parseheader(ktexlib::KTEXFileOperation::KTEXHeader header, ktexlib::KTEXFileOperation::KTEXInfo& info)
+{
+	info.flags		 = header.firstblock & 0x000C0000;
+	info.mipscount	 = header.firstblock & 0x0003E000;
+	info.pixelformat = header.firstblock & 0x00001E00;
+	info.platform	 = header.firstblock & 0x000001F0;
+	info.texturetype = header.firstblock & 0x0000000F;
+}
+
+bool ktexlib::KTEXFileOperation::KTEXFile::LoadKTEX(std::wstring FileName)
+{
+	size_t filepos = 0;
+	ifstream file(FileName);
+	mipmapinfile mipinfo;
+	uc_vector vec_mipmapdata;
+	file.read((char*)(&Header), 8);
+	filepos + 8;
+	if (Header.cc4 != 0x5445584B)
+		return false;
+	parseheader(Header, Info);
+	file.seekg(filepos);
+	file.read((char*)(&mipinfo), 12);
+	filepos + 12;
+	file.seekg(filepos);
+	vec_mipmapdata.resize(mipinfo.size);
+	file.read((char*)vec_mipmapdata.data(), mipinfo.size);
+	filepos + mipinfo.size;
+
+	switch (Info.pixelformat)
+	{
+	case(pixfrm.ARGB):
+		vec_rgba = vec_mipmapdata;
+	case(pixfrm.DXT5):
+		vec_rgba.resize(mipinfo.x*mipinfo.y);
+		squish::Decompress(vec_rgba.data(), vec_mipmapdata.data(), squish::kDxt1);
+	case(pixfrm.DXT1):
+		vec_rgba.resize(mipinfo.x*mipinfo.y);
+		squish::Decompress(vec_rgba.data(), vec_mipmapdata.data(), squish::kDxt5);
+	case(pixfrm.DXT3):
+		vec_rgba.resize(mipinfo.x*mipinfo.y);
+		squish::Decompress(vec_rgba.data(), vec_mipmapdata.data(), squish::kDxt3);
+	}
+
 }
