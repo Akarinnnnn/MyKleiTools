@@ -1,4 +1,10 @@
 //#include "pch.h"
+#include <exception>
+#include <lodepng/lodepng.h>
+#include <squish/squish.h>
+#include "AltasGen.h"
+
+
 #include "TEXFileOperation.h"
 
 template<typename T>
@@ -183,24 +189,21 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 	return true;
 }
 
-void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(string I,string O)
+void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(std::experimental::filesystem::path I,string O)
 {
 #ifndef MULTI_THREAD_KTEXCONOUTPUT
 	cout << "Loading PNG file..." << endl;
 	cout << I << endl;
 #endif
-	output = wstring(I.begin(), I.end());//wdnm!
+	output = I.wstring();//wdnm!
 	if (O == "")
 	{
-		auto iter = output.end();
-		*(iter - 1) = 'x';
-		*(iter - 2) = 'e';
-		*(iter - 3) = 't';
+		output = I.stem().wstring() + L".tex";
 	}
-	int err = lodepng::load_file(this->vecPNG, I);
+	int err = lodepng::load_file(this->vecPNG, I.string());
 	if (err == 28)
 	{
-		cout << "at" + I + ",\n" << lodepng_error_text(28) << endl;
+		cout << "at" + I.string() + ",\n" << lodepng_error_text(28) << endl;
 	}
 	/*if (err != 0)
 	{
@@ -212,11 +215,11 @@ void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(string I,string O)
 
 inline void __fastcall parseheader(ktexlib::KTEXFileOperation::KTEXHeader header, ktexlib::KTEXFileOperation::KTEXInfo& info)
 {
-	info.flags		 = header.firstblock & 0x000C0000;
-	info.mipscount	 = header.firstblock & 0x0003E000;
-	info.pixelformat = header.firstblock & 0x00001E00;
-	info.platform	 = header.firstblock & 0x000001F0;
-	info.texturetype = header.firstblock & 0x0000000F;
+	info.flags		 = (header.firstblock & 0x000C0000) >>18;
+	info.mipscount	 = (header.firstblock & 0x0003E000) >>13;
+	info.pixelformat = (header.firstblock & 0x00001E00) >>7;
+	info.platform	 = (header.firstblock & 0x000001F0) >>4;
+	info.texturetype = (header.firstblock & 0x0000000F) ;
 }
 
 bool ktexlib::KTEXFileOperation::KTEXFile::LoadKTEX(std::wstring FileName)
@@ -225,6 +228,8 @@ bool ktexlib::KTEXFileOperation::KTEXFile::LoadKTEX(std::wstring FileName)
 	ifstream file(FileName);
 	mipmapinfile mipinfo;
 	uc_vector vec_mipmapdata;
+	if (!file.is_open())
+		return false;
 	file.read((char*)(&Header), 8);
 	filepos += 8;
 	if (Header.cc4 != 0x5445584B)
@@ -252,5 +257,10 @@ bool ktexlib::KTEXFileOperation::KTEXFile::LoadKTEX(std::wstring FileName)
 		vec_rgba.resize(mipinfo.x*mipinfo.y);
 		squish::Decompress(vec_rgba.data(), vec_mipmapdata.data(), squish::kDxt3);
 	}
+	return true;
+}
 
+void ktexlib::KTEXFileOperation::KTEXFile::GetRBGAImage(uc_vector & ret)
+{
+	ret = this->vec_rgba;
 }

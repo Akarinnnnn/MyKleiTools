@@ -5,11 +5,8 @@
 #include <vector>
 #include <iostream>
 #include <mutex>
-#include <exception>
-#include <lodepng/lodepng.h>
-#include <squish/squish.h>
+#include <filesystem>
 
-#include "AltasGen.h"
 //多线程控制台输出
 #define MULTI_THREAD_KTEXCONOUTPUT
 
@@ -44,7 +41,7 @@ namespace ktexlib
 		struct KTEXHeader
 		{
 			//CC4
-			const unsigned int cc4 = 0x5845544B;
+			unsigned int cc4 = 0x5845544B;
 			//第一数据块
 			unsigned int firstblock = 0xFFF00000;
 			//0xFFF 12bit, flags 2bit, mipscount 5bit, textype 4bit
@@ -52,7 +49,7 @@ namespace ktexlib
 		};
 		struct KTEXInfo
 		{
-			bool flags = 0;
+			unsigned char flags = 0;
 			unsigned short mipscount = 0;
 			unsigned char texturetype = textyp.d1;
 			unsigned char pixelformat = pixfrm.DXT5;
@@ -73,8 +70,9 @@ namespace ktexlib
 		{
 		public:
 			bool ConvertFromPNG();
-			void __fastcall LoadPNG(std::string InputPngFileName, std::string output = "");//使用lodepng 
+			void __fastcall LoadPNG(std::experimental::filesystem::path InputPngFileName, std::string output = "");//使用lodepng 
 			bool LoadKTEX(std::wstring FileName);
+			void GetRBGAImage(uc_vector& ret);
 			//KTEXFile(std::string InputKtexFileName);//加载 KTEX,没弄好
 			KTEXFile();
 			~KTEXFile();
