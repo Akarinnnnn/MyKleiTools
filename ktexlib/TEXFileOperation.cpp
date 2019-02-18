@@ -132,16 +132,18 @@ void mipmapsgen(const ktexlib::KTEXFileOperation::imgs I, ktexlib::KTEXFileOpera
 	using namespace ktexlib::KTEXFileOperation;
 	for (auto img : I)
 	{
-		mipmapv2 tempmipmap;
+		mipmapv2 temp;
 		
 		switch (Info.pixelformat)//像素格式判断，压缩，写入mipmap数据
 		{
 			using namespace squish;
 		case (pixfrm.ARGB):
-			
+			temp.size = img.size();
+			temp.data = (char*)img.data();
 			break;
 		case (pixfrm.DXT1):
 			//target.data.resize(GetStorageRequirements(wide, height, kDxt1));
+			temp.size = GetStorageRequirements()
 			break;
 		case (pixfrm.DXT3):
 
@@ -151,7 +153,7 @@ void mipmapsgen(const ktexlib::KTEXFileOperation::imgs I, ktexlib::KTEXFileOpera
 		default:
 			throw std::invalid_argument("::mipmapsgen(TEXFileOperation.cpp) 像素格式参数错误");
 		}
-		O.push_back(tempmipmap);
+		O.push_back(temp);
 	}
 }
 
