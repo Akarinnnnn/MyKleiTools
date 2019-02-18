@@ -1,5 +1,5 @@
 //#include "pch.h"
-#include <exception>
+
 #include <lodepng/lodepng.h>
 #include <squish/squish.h>
 #include "AltasGen.h"
@@ -127,7 +127,33 @@ inline void ktexlib::KTEXFileOperation::KTEXFile::KTEXFirstBlockGen()
 	Header.firstblock=firstblock;
 }
 
+void mipmapsgen(const ktexlib::KTEXFileOperation::imgs I, ktexlib::KTEXFileOperation::mipmaps& O, ktexlib::KTEXFileOperation::KTEXInfo Info)
+{
+	using namespace ktexlib::KTEXFileOperation;
+	for (auto img : I)
+	{
+		mipmapv2 tempmipmap;
+		
+		switch (Info.pixelformat)//像素格式判断，压缩，写入mipmap数据
+		{
+			using namespace squish;
+		case (pixfrm.ARGB):
+			
+			break;
+		case (pixfrm.DXT1):
+			//target.data.resize(GetStorageRequirements(wide, height, kDxt1));
+			break;
+		case (pixfrm.DXT3):
 
+			break;
+		case (pixfrm.DXT5):
+			break;
+		default:
+			throw std::invalid_argument("::mipmapsgen(TEXFileOperation.cpp) 像素格式参数错误");
+		}
+		O.push_back(tempmipmap);
+	}
+}
 
 bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 {
@@ -215,11 +241,25 @@ void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(std::experimental:
 
 inline void __fastcall parseheader(ktexlib::KTEXFileOperation::KTEXHeader header, ktexlib::KTEXFileOperation::KTEXInfo& info)
 {
-	info.flags		 = (header.firstblock & 0x000C0000) >>18;
-	info.mipscount	 = (header.firstblock & 0x0003E000) >>13;
-	info.pixelformat = (header.firstblock & 0x00001E00) >>7;
-	info.platform	 = (header.firstblock & 0x000001F0) >>4;
-	info.texturetype = (header.firstblock & 0x0000000F) ;
+	/*
+	firstblock |= 0xFFF;//自己写的有bug，干脆复制粘贴
+	firstblock <<= 2;
+	firstblock |= (unsigned int)Info.flags;
+	firstblock <<= 5;
+	firstblock |= Info.mipscount;
+	firstblock <<= 4;
+	firstblock |= Info.texturetype;
+	firstblock <<= 5;
+	firstblock |= Info.pixelformat;
+	firstblock <<= 4;
+	firstblock |= Info.platform;
+	*/
+	//20
+	info.flags			 = (header.firstblock & 0x000C0000) >>18;
+	info.mipscount		 = (header.firstblock & 0x0003E000) >>13;
+	info.texturetype	 = (header.firstblock & 0x00001E00) >>9;
+	info.pixelformat	 = (header.firstblock & 0x000001F0) >>4;
+	info.platform		 = (header.firstblock & 0x0000000F) ;
 }
 
 bool ktexlib::KTEXFileOperation::KTEXFile::LoadKTEX(std::wstring FileName)
@@ -275,6 +315,10 @@ void ktexlib::KTEXFileOperation::KTEXv2::PushRGBA(uc_vector RGBA_array)
 	this->RGBA_vectors.push_back(RGBA_array);
 }
 
+
+
+
+
 void ktexlib::KTEXFileOperation::KTEXv2::Convert()
 {
 
@@ -282,7 +326,45 @@ void ktexlib::KTEXFileOperation::KTEXv2::Convert()
 
 void ktexlib::KTEXFileOperation::KTEXv2::LoadKTEX(std::experimental::filesystem::path filepath)
 {
+	ifstream file(filepath, ios::binary);
+	if (!file.is_open())
+	{
+		throw KTEXexception("failed to open specified file.", -1);
+	}
+	if (Header.cc4 != 0x5845544B)
+	{
+		throw KTEXexception("Invalid KTEX file.", 1);
+	}
+	output = filepath.stem().wstring() + L".tex";
+	file.read((char*)(&this->Header), 8);
+	parseheader(this->Header, this->Info);
+	for (unsigned int i = 0; i < Info.mipscount; i++)
+	{
+		this->mipmaps.push_back(mipmapv2());
+		mipmapv2& target = mipmaps[i];
+		file.read((char*)(&target), 10);
+		file.seekg(ios::cur, 10);
+		auto temp = new char[target.size];
+		file.read(temp, target.size);
+		file.seekg(ios::cur, target.size);
+	}
+}
 
+ktexlib::KTEXFileOperation::mipmapv2 ktexlib::KTEXFileOperation::KTEXv2::GetMipmap(unsigned int 序号)
+{
+	return this->mipmaps[序号];
+}
+
+void ktexlib::KTEXFileOperation::KTEXv2::clear()
+{
+	this->mipmaps.clear();
+	this->RGBA_vectors.clear();
+	
+}
+
+ktexlib::KTEXFileOperation::KTEXv2::~KTEXv2()
+{
+	//do nothing.
 }
 
 void ktexlib::KTEXFileOperation::operator+=(KTEXv2 dest, mipmapv2 src)
@@ -293,4 +375,9 @@ void ktexlib::KTEXFileOperation::operator+=(KTEXv2 dest, mipmapv2 src)
 void ktexlib::KTEXFileOperation::operator+=(KTEXv2 dest, uc_vector src)
 {
 	dest.RGBA_vectors.push_back(src);
+}
+
+ktexlib::KTEXFileOperation::mipmapv2::~mipmapv2()
+{
+	delete[] this->data;
 }

@@ -108,7 +108,7 @@ static int FitCodes( u8 const* rgba, int mask, u8 const* codes, u8* indices )
 		int bit = 1 << i;
 		if( ( mask & bit ) == 0 )
 		{
-			// use the first code
+			// use the first _code
 			indices[i] = 0;
 			continue;
 		}
@@ -119,7 +119,7 @@ static int FitCodes( u8 const* rgba, int mask, u8 const* codes, u8* indices )
 		int index = 0;
 		for( int j = 0; j < 8; ++j )
 		{
-			// get the squared error from this code
+			// get the squared error from this _code
 			int dist = ( int )value - ( int )codes[j];
 			dist *= dist;
 			
@@ -264,7 +264,7 @@ void CompressAlphaDxt5( u8 const* rgba, int mask, void* block )
 	FixRange( min5, max5, 5 );
 	FixRange( min7, max7, 7 );
 	
-	// set up the 5-alpha code book
+	// set up the 5-alpha _code book
 	u8 codes5[8];
 	codes5[0] = ( u8 )min5;
 	codes5[1] = ( u8 )max5;
@@ -273,14 +273,14 @@ void CompressAlphaDxt5( u8 const* rgba, int mask, void* block )
 	codes5[6] = 0;
 	codes5[7] = 255;
 	
-	// set up the 7-alpha code book
+	// set up the 7-alpha _code book
 	u8 codes7[8];
 	codes7[0] = ( u8 )min7;
 	codes7[1] = ( u8 )max7;
 	for( int i = 1; i < 7; ++i )
 		codes7[1 + i] = ( u8 )( ( ( 7 - i )*min7 + i*max7 )/7 );
 		
-	// fit the data to both code books
+	// fit the data to both _code books
 	u8 indices5[16];
 	u8 indices7[16];
 	int err5 = FitCodes( rgba, mask, codes5, indices5 );

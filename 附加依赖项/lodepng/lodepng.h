@@ -31,8 +31,8 @@ freely, subject to the following restrictions:
 extern const char* LODEPNG_VERSION_STRING;
 
 /*
-The following #defines are used to create code sections. They can be disabled
-to disable code sections, which can give faster compile time and smaller binary.
+The following #defines are used to create _code sections. They can be disabled
+to disable _code sections, which can give faster compile time and smaller binary.
 The "NO_COMPILE" defines are designed to be used to pass as defines to the
 compiler command to disable them without modifying this header, e.g.
 -DLODEPNG_NO_COMPILE_ZLIB for gcc.
@@ -110,7 +110,7 @@ in: Memory buffer with the PNG file.
 insize: size of the in buffer.
 colortype: the desired color type for the raw output image. See explanation on PNG color types.
 bitdepth: the desired bit depth for the raw output image. See explanation on PNG color types.
-Return value: LodePNG error code (0 means no error).
+Return value: LodePNG error _code (0 means no error).
 */
 unsigned lodepng_decode_memory(unsigned char** out, unsigned* w, unsigned* h,
                                const unsigned char* in, size_t insize,
@@ -159,7 +159,7 @@ w: width of the raw pixel data in pixels.
 h: height of the raw pixel data in pixels.
 colortype: the color type of the raw input image. See explanation on PNG color types.
 bitdepth: the bit depth of the raw input image. See explanation on PNG color types.
-Return value: LodePNG error code (0 means no error).
+Return value: LodePNG error _code (0 means no error).
 */
 unsigned lodepng_encode_memory(unsigned char** out, size_t* outsize,
                                const unsigned char* image, unsigned w, unsigned h,
@@ -244,7 +244,7 @@ unsigned encode(const std::string& filename,
 #endif /*LODEPNG_COMPILE_PNG*/
 
 #ifdef LODEPNG_COMPILE_ERROR_TEXT
-/*Returns an English description of the numerical error code.*/
+/*Returns an English description of the numerical error _code.*/
 const char* lodepng_error_text(unsigned code);
 #endif /*LODEPNG_COMPILE_ERROR_TEXT*/
 
@@ -353,7 +353,7 @@ typedef struct LodePNGColorMode {
 /*init, cleanup and copy functions to use with this struct*/
 void lodepng_color_mode_init(LodePNGColorMode* info);
 void lodepng_color_mode_cleanup(LodePNGColorMode* info);
-/*return value is error code (0 means no error)*/
+/*return value is error _code (0 means no error)*/
 unsigned lodepng_color_mode_copy(LodePNGColorMode* dest, const LodePNGColorMode* source);
 /* Makes a temporary LodePNGColorMode that does not need cleanup (no palette) */
 LodePNGColorMode lodepng_color_mode_make(LodePNGColorType colortype, unsigned bitdepth);
@@ -571,7 +571,7 @@ typedef struct LodePNGInfo {
 /*init, cleanup and copy functions to use with this struct*/
 void lodepng_info_init(LodePNGInfo* info);
 void lodepng_info_cleanup(LodePNGInfo* info);
-/*return value is error code (0 means no error)*/
+/*return value is error _code (0 means no error)*/
 unsigned lodepng_info_copy(LodePNGInfo* dest, const LodePNGInfo* source);
 
 #ifdef LODEPNG_COMPILE_ANCILLARY_CHUNKS
@@ -591,12 +591,12 @@ void lodepng_clear_icc(LodePNGInfo* info); /*use this to clear the texts again a
 Converts raw buffer from one color type to another color type, based on
 LodePNGColorMode structs to describe the input and output color type.
 See the reference manual at the end of this header file to see which color conversions are supported.
-return value = LodePNG error code (0 if all went ok, an error if the conversion isn't supported)
+return value = LodePNG error _code (0 if all went ok, an error if the conversion isn't supported)
 The out buffer must have size (w * h * bpp + 7) / 8, where bpp is the bits per pixel
 of the output color type (lodepng_get_bpp).
 For < 8 bpp images, there should not be padding bits at the end of scanlines.
 For 16-bit per channel colors, uses big endian format like PNG does.
-Return value is LodePNG error code
+Return value is LodePNG error _code
 */
 unsigned lodepng_convert(unsigned char* out, const unsigned char* in,
                          const LodePNGColorMode* mode_out, const LodePNGColorMode* mode_in,
@@ -762,7 +762,7 @@ unsigned lodepng_inspect(unsigned* w, unsigned* h,
 
 /*
 Reads one metadata chunk (other than IHDR) of the PNG file and outputs what it
-read in the state. Returns error code on failure.
+read in the state. Returns error _code on failure.
 Use lodepng_inspect first with a new state, then e.g. lodepng_chunk_find_const
 to find the desired chunk type, and if non null use lodepng_inspect_chunk (with
 chunk_pointer - start_of_file as pos).
@@ -859,7 +859,7 @@ const unsigned char* lodepng_chunk_find_const(const unsigned char* chunk, const 
 /*
 Appends chunk to the data in out. The given chunk should already have its chunk header.
 The out variable and outlength are updated to reflect the new reallocated buffer.
-Returns error code (0 if it went ok)
+Returns error _code (0 if it went ok)
 */
 unsigned lodepng_chunk_append(unsigned char** out, size_t* outlength, const unsigned char* chunk);
 
@@ -867,7 +867,7 @@ unsigned lodepng_chunk_append(unsigned char** out, size_t* outlength, const unsi
 Appends new chunk to out. The chunk to append is given by giving its length, type
 and data separately. The type is a 4-letter string.
 The out variable and outlength are updated to reflect the new reallocated buffer.
-Returne error code (0 if it went ok)
+Returne error _code (0 if it went ok)
 */
 unsigned lodepng_chunk_create(unsigned char** out, size_t* outlength, unsigned length,
                               const char* type, const unsigned char* data);
@@ -915,7 +915,7 @@ unsigned lodepng_zlib_compress(unsigned char** out, size_t* outsize,
                                const LodePNGCompressSettings* settings);
 
 /*
-Find length-limited Huffman code for given frequencies. This function is in the
+Find length-limited Huffman _code for given frequencies. This function is in the
 public interface only for tests, it's used internally by lodepng_deflate.
 */
 unsigned lodepng_huffman_code_lengths(unsigned* lengths, const unsigned* frequencies,
@@ -936,7 +936,7 @@ after usage you should free it.
 out: output parameter, contains pointer to loaded buffer.
 outsize: output parameter, size of the allocated out buffer
 filename: the path to the file to load
-return value: error code (0 means ok)
+return value: error _code (0 means ok)
 */
 unsigned lodepng_load_file(unsigned char** out, size_t* outsize, const char* filename);
 
@@ -946,7 +946,7 @@ the file without warning!
 buffer: the buffer to write
 buffersize: size of the buffer to write
 filename: the path to the file to save to
-return value: error code (0 means ok)
+return value: error _code (0 means ok)
 */
 unsigned lodepng_save_file(const unsigned char* buffer, size_t buffersize, const char* filename);
 #endif /*LODEPNG_COMPILE_DISK*/
@@ -986,7 +986,7 @@ unsigned encode(std::vector<unsigned char>& out,
 #ifdef LODEPNG_COMPILE_DISK
 /*
 Load a file from disk into an std::vector.
-return value: error code (0 means ok)
+return value: error _code (0 means ok)
 */
 unsigned load_file(std::vector<unsigned char>& buffer, const std::string& filename);
 
@@ -1102,7 +1102,7 @@ LodePNG exists out of two files:
 -lodepng.c(pp): give it the name lodepng.c or lodepng.cpp (or .cc) depending on your usage
 
 If you want to start using LodePNG right away without reading this doc, get the
-examples from the LodePNG website to see how to use it in code, or check the
+examples from the LodePNG website to see how to use it in _code, or check the
 smaller examples in chapter 13 here.
 
 LodePNG is simple but only supports the basic requirements. To achieve
@@ -1171,8 +1171,8 @@ The C++ version has extra functions with std::vectors in the interface and the
 lodepng::State class which is a LodePNGState with constructor and destructor.
 
 These files work without modification for both C and C++ compilers because all
-the additional C++ code is in "#ifdef __cplusplus" blocks that make C-compilers
-ignore it, and the C code is made to compile both with strict ISO C90 and C++.
+the additional C++ _code is in "#ifdef __cplusplus" blocks that make C-compilers
+ignore it, and the C _code is made to compile both with strict ISO C90 and C++.
 
 To use the C++ version, you need to rename the source file to lodepng.cpp
 (instead of lodepng.c), and compile it with a C++ compiler.
@@ -1471,14 +1471,14 @@ unsigned short* buffer on x86 CPUs.
 7. error values
 ---------------
 
-All functions in LodePNG that return an error code, return 0 if everything went
-OK, or a non-zero code if there was an error.
+All functions in LodePNG that return an error _code, return 0 if everything went
+OK, or a non-zero _code if there was an error.
 
 The meaning of the LodePNG error values can be retrieved with the function
-lodepng_error_text: given the numerical error code, it returns a description
+lodepng_error_text: given the numerical error _code, it returns a description
 of the error in English as a string.
 
-Check the implementation of lodepng_error_text to see the meaning of each code.
+Check the implementation of lodepng_error_text to see the meaning of each _code.
 
 
 8. chunks and PNG editing
@@ -1747,7 +1747,7 @@ yyyymmdd.
 Some changes aren't backwards compatible. Those are indicated with a (!)
 symbol.
 
-*) 30 dec 2018: code style changes only: removed newlines before opening braces.
+*) 30 dec 2018: _code style changes only: removed newlines before opening braces.
 *) 10 sep 2018: added way to inspect metadata chunks without full decoding.
 *) 19 aug 2018 (!): fixed color mode bKGD is encoded with and made it use
    palette index in case of palette.
@@ -1772,7 +1772,7 @@ symbol.
 *) 25 mar 2013: Added an optional feature to ignore some PNG errors (fix_png).
 *) 11 mar 2013 (!): Bugfix with custom free. Changed from "my" to "lodepng_"
     prefix for the custom allocators and made it possible with a new #define to
-    use custom ones in your project without needing to change lodepng's code.
+    use custom ones in your project without needing to change lodepng's _code.
 *) 28 jan 2013: Bugfix with color key.
 *) 27 okt 2012: Tweaks in text chunk keyword length error handling.
 *) 8 okt 2012 (!): Added new filter strategy (entropy) and new auto color mode.
@@ -1787,7 +1787,7 @@ symbol.
 *) 22 apr 2012 (!): Made interface more consistent, renaming a lot. Removed
     redundant C++ codec classes. Reduced amount of structs. Everything changed,
     but it is cleaner now imho and functionality remains the same. Also fixed
-    several bugs and shrunk the implementation code. Made new samples.
+    several bugs and shrunk the implementation _code. Made new samples.
 *) 6 nov 2011 (!): By default, the encoder now automatically chooses the best
     PNG color model and bit depth, based on the amount and type of colors of the
     raw image. For this, autoLeaveOutAlphaChannel replaced by auto_choose_color.
@@ -1798,14 +1798,14 @@ symbol.
     better ones (it's quite significant). A setting to do an experimental, slow,
     brute force search for PNG filter types is added.
 *) 17 aug 2011 (!): changed some C zlib related function names.
-*) 16 aug 2011: made the code less wide (max 120 characters per line).
-*) 17 apr 2011: code cleanup. Bugfixes. Convert low to 16-bit per sample colors.
+*) 16 aug 2011: made the _code less wide (max 120 characters per line).
+*) 17 apr 2011: _code cleanup. Bugfixes. Convert low to 16-bit per sample colors.
 *) 21 feb 2011: fixed compiling for C90. Fixed compiling with sections disabled.
 *) 11 dec 2010: encoding is made faster, based on suggestion by Peter Eastman
     to optimize long sequences of zeros.
 *) 13 nov 2010: added LodePNG_InfoColor_hasPaletteAlpha and
     LodePNG_InfoColor_canHaveAlpha functions for convenience.
-*) 7 nov 2010: added LodePNG_error_text function to get error code description.
+*) 7 nov 2010: added LodePNG_error_text function to get error _code description.
 *) 30 okt 2010: made decoding slightly faster
 *) 26 okt 2010: (!) changed some C function and struct names (more consistent).
      Reorganized the documentation and the declaration order in the header.
@@ -1818,28 +1818,28 @@ symbol.
 *) 26 apr 2008: added a few more checks here and there to ensure more safety.
 *) 06 mar 2008: crash with encoding of strings fixed
 *) 02 feb 2008: support for international text chunks added (iTXt)
-*) 23 jan 2008: small cleanups, and #defines to divide code in sections
+*) 23 jan 2008: small cleanups, and #defines to divide _code in sections
 *) 20 jan 2008: support for unknown chunks allowing using LodePNG for an editor.
 *) 18 jan 2008: support for tIME and pHYs chunks added to encoder and decoder.
 *) 17 jan 2008: ability to encode and decode compressed zTXt chunks added
-    Also various fixes, such as in the deflate and the padding bits code.
+    Also various fixes, such as in the deflate and the padding bits _code.
 *) 13 jan 2008: Added ability to encode Adam7-interlaced images. Improved
-    filtering code of encoder.
+    filtering _code of encoder.
 *) 07 jan 2008: (!) changed LodePNG to use ISO C90 instead of C++. A
     C++ wrapper around this provides an interface almost identical to before.
-    Having LodePNG be pure ISO C90 makes it more portable. The C and C++ code
+    Having LodePNG be pure ISO C90 makes it more portable. The C and C++ _code
     are together in these files but it works both for C and C++ compilers.
 *) 29 dec 2007: (!) changed most integer types to unsigned int + other tweaks
 *) 30 aug 2007: bug fixed which makes this Borland C++ compatible
 *) 09 aug 2007: some VS2005 warnings removed again
-*) 21 jul 2007: deflate code placed in new namespace separate from zlib code
+*) 21 jul 2007: deflate _code placed in new namespace separate from zlib _code
 *) 08 jun 2007: fixed bug with 2- and 4-bit color, and small interlaced images
 *) 04 jun 2007: improved support for Visual Studio 2005: crash with accessing
     invalid std::vector element [0] fixed, and level 3 and 4 warnings removed
 *) 02 jun 2007: made the encoder add a tag with version by default
-*) 27 may 2007: zlib and png code separated (but still in the same file),
+*) 27 may 2007: zlib and png _code separated (but still in the same file),
     simple encoder/decoder functions added for more simple usage cases
-*) 19 may 2007: minor fixes, some code cleaning, new error added (error 69),
+*) 19 may 2007: minor fixes, some _code cleaning, new error added (error 69),
     moved some examples from here to lodepng_examples.cpp
 *) 12 may 2007: palette decoding bug fixed
 *) 24 apr 2007: changed the license from BSD to the zlib license
@@ -1847,7 +1847,7 @@ symbol.
 *) 04 mar 2007: (!) tEXt chunk related fixes, and support for encoding
     palettized PNG images. Plus little interface change with palette and texts.
 *) 03 mar 2007: Made it encode dynamic Huffman shorter with repeat codes.
-    Fixed a bug where the end code of a block had length 0 in the Huffman tree.
+    Fixed a bug where the end _code of a block had length 0 in the Huffman tree.
 *) 26 feb 2007: Huffman compression with dynamic trees (BTYPE 2) now implemented
     and supported by the encoder, resulting in smaller PNGs at the output.
 *) 27 jan 2007: Made the Adler-32 test faster so that a timewaste is gone.
@@ -1860,10 +1860,10 @@ symbol.
     at last made the decoder give errors for incorrect Adler32 or Crc.
 *) 01 jan 2007: Fixed bug with encoding PNGs with less than 8 bits per channel.
 *) 29 dec 2006: Added support for encoding images without alpha channel, and
-    cleaned out code as well as making certain parts faster.
+    cleaned out _code as well as making certain parts faster.
 *) 28 dec 2006: Added "Settings" to the encoder.
 *) 26 dec 2006: The encoder now does LZ77 encoding and produces much smaller files now.
-    Removed some code duplication in the decoder. Fixed little bug in an example.
+    Removed some _code duplication in the decoder. Fixed little bug in an example.
 *) 09 dec 2006: (!) Placed output parameters of public functions as first parameter.
     Fixed a bug of the decoder with 16-bit per color.
 *) 15 okt 2006: Changed documentation structure
@@ -1874,7 +1874,7 @@ symbol.
     way. Renamed decodePNG to decodePNGGeneric.
 *) 29 jul 2006: (!) Changed the interface: image info is now returned as a
     struct of type LodePNG::LodePNG_Info, instead of a vector, which was a bit clumsy.
-*) 28 jul 2006: Cleaned the code and added new error checks.
+*) 28 jul 2006: Cleaned the _code and added new error checks.
     Corrected terminology "deflate" into "inflate".
 *) 23 jun 2006: Added SDL example in the documentation in the header, this
     example allows easy debugging by displaying the PNG and its transparency.
@@ -1888,7 +1888,7 @@ symbol.
 *) 07 jun 2006: (!) Renamed functions to decodePNG and placed them
     in LodePNG namespace. Changed the order of the parameters. Rewrote the
     documentation in the header. Renamed files to lodepng.cpp and lodepng.h
-*) 22 apr 2006: Optimized and improved some code
+*) 22 apr 2006: Optimized and improved some _code
 *) 07 sep 2005: (!) Changed to std::vector interface
 *) 12 aug 2005: Initial release (C++, decoder only)
 

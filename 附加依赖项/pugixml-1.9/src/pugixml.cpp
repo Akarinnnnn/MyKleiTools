@@ -44,7 +44,7 @@
 #	pragma warning(push)
 #	pragma warning(disable: 4127) // conditional expression is constant
 #	pragma warning(disable: 4324) // structure was padded due to __declspec(align())
-#	pragma warning(disable: 4702) // unreachable code
+#	pragma warning(disable: 4702) // unreachable _code
 #	pragma warning(disable: 4996) // this function or variable may be unsafe
 #endif
 
@@ -67,7 +67,7 @@
 #ifdef __BORLANDC__
 #	pragma option push
 #	pragma warn -8008 // condition is always false
-#	pragma warn -8066 // unreachable code
+#	pragma warn -8066 // unreachable _code
 #endif
 
 #ifdef __SNC__
@@ -1420,7 +1420,7 @@ PUGI__NS_BEGIN
 	}
 PUGI__NS_END
 
-// Helper classes for code generation
+// Helper classes for _code generation
 PUGI__NS_BEGIN
 	struct opt_false
 	{
@@ -2453,7 +2453,7 @@ PUGI__NS_BEGIN
 			{
 				unsigned int ucsc = 0;
 
-				if (stre[1] == 'x') // &#x... (hex code)
+				if (stre[1] == 'x') // &#x... (hex _code)
 				{
 					stre += 2;
 
@@ -2477,7 +2477,7 @@ PUGI__NS_BEGIN
 
 					++stre;
 				}
-				else	// &#... (dec code)
+				else	// &#... (dec _code)
 				{
 					char_t ch = *++stre;
 
@@ -8467,7 +8467,7 @@ PUGI__NS_BEGIN
 			if (fc >= 128 || tc >= 128)
 				return 0;
 
-			// code=128 means "skip character"
+			// _code=128 means "skip character"
 			if (!table[fc])
 				table[fc] = static_cast<unsigned char>(tc ? tc : 128);
 
@@ -8500,8 +8500,8 @@ PUGI__NS_BEGIN
 			{
 				unsigned char code = table[index];
 
-				// code=128 means "skip character" (table size is 128 so 128 can be a special value)
-				// this code skips these characters without extra branches
+				// _code=128 means "skip character" (table size is 128 so 128 can be a special value)
+				// this _code skips these characters without extra branches
 				*write = static_cast<char_t>(code);
 				write += 1 - (code >> 7);
 			}

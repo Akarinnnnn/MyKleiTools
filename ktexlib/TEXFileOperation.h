@@ -4,12 +4,13 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
-#include <mutex>
+
 #include <filesystem>
-
+#include <exception>
 //多线程控制台输出
-#define MULTI_THREAD_KTEXCONOUTPUT
-
+#ifdef MULTI_THREAD_KTEXCONOUTPUT
+#include <mutex>
+#endif
 namespace ktexlib
 {
 	namespace KTEXFileOperation
@@ -37,6 +38,31 @@ namespace ktexlib
 			char cube = 4;//cubemap
 		}constexpr textyp;
 		typedef std::vector<unsigned char> uc_vector;
+
+		class KTEXexception :std::exception
+		{
+		public:
+			~KTEXexception() noexcept
+			{
+				delete[] msg;
+			}
+			KTEXexception(const char* msg ,int code) noexcept
+			{
+				this->msg = msg;
+				this->_code = code;
+			}
+			char const* what() const noexcept
+			{
+				return msg;
+			}
+			int const code() noexcept
+			{
+				return _code;
+			}
+		private:
+			char const* msg;
+			int _code;
+		};
 
 		struct KTEXHeader
 		{
@@ -70,8 +96,9 @@ namespace ktexlib
 			unsigned short z = 0;
 			unsigned int size = 0;
 			char* data = nullptr;
+			~mipmapv2();
 		};
-
+		
 		typedef std::vector<mipmapv2> mipmaps;
 		typedef std::vector<uc_vector> imgs;
 		class KTEXFile
@@ -108,8 +135,9 @@ namespace ktexlib
 			void PushRGBA(uc_vector RGBA_array);
 			void Convert();
 			void LoadKTEX(std::experimental::filesystem::path filepath);
-
-
+			mipmapv2 GetMipmap(unsigned int serial);
+			void clear();
+			~KTEXv2();
 
 			friend void operator+= (KTEXv2 dest, mipmapv2 src);
 			friend void operator+=(KTEXv2 dest, uc_vector src);

@@ -106,12 +106,12 @@ void RangeFit::Compress3( void* block )
 	codes[1] = m_end;
 	codes[2] = 0.5f*m_start + 0.5f*m_end;
 
-	// match each point to the closest code
+	// match each point to the closest _code
 	u8 closest[16];
 	float error = 0.0f;
 	for( int i = 0; i < count; ++i )
 	{
-		// find the closest code
+		// find the closest _code
 		float dist = FLT_MAX;
 		int idx = 0;
 		for( int j = 0; j < 3; ++j )
@@ -159,12 +159,12 @@ void RangeFit::Compress4( void* block )
 	codes[2] = ( 2.0f/3.0f )*m_start + ( 1.0f/3.0f )*m_end;
 	codes[3] = ( 1.0f/3.0f )*m_start + ( 2.0f/3.0f )*m_end;
 
-	// match each point to the closest code
+	// match each point to the closest _code
 	u8 closest[16];
 	float error = 0.0f;
 	for( int i = 0; i < count; ++i )
 	{
-		// find the closest code
+		// find the closest _code
 		float dist = FLT_MAX;
 		int idx = 0;
 		for( int j = 0; j < 4; ++j )

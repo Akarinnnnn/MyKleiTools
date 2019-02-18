@@ -1,13 +1,10 @@
 ﻿#include <iostream>
-#include "../ktexlib/AltasGen.h"
+#include "../ktexlib/TEXFileOperation.h"
 
 int main()
 {
-	using namespace ktexlib::AtlasGen;
-	bbox testbbox =
-	{
-		0,0,2,2
-	};
-	unsigned short size[2] = { 2,2 };
-	AtlasDocumentGen(L"SB",size , testbbox);
+	using namespace ktexlib::KTEXFileOperation;
+	KTEXv2 test;
+	test.LoadKTEX("E:\\AutoCompiler_CPP\\testout.tex");
+	
 }
