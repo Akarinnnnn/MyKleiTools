@@ -51,10 +51,10 @@ ktexlib::KTEXFileOperation::KTEXFile::KTEXFile()
 
 ktexlib::KTEXFileOperation::KTEXFile::~KTEXFile()
 {
-	fsTEX.close();
+	filestream.close();
 }
 
-void __fastcall ktexlib::KTEXFileOperation::KTEXFile::multimipmapgen(mipmap_vector inputmip,imgs inputimg)
+void __fastcall ktexlib::KTEXFileOperation::KTEXFile::multimipmapgen(mipmaps inputmip,imgs inputimg)
 {
 	using namespace ktexlib::KTEXFileOperation;
 	auto iter = inputmip.begin();
@@ -263,4 +263,34 @@ bool ktexlib::KTEXFileOperation::KTEXFile::LoadKTEX(std::wstring FileName)
 void ktexlib::KTEXFileOperation::KTEXFile::GetRBGAImage(uc_vector & ret)
 {
 	ret = this->vec_rgba;
+}
+
+ktexlib::KTEXFileOperation::mipmap ktexlib::KTEXFileOperation::KTEXFile::Getmipmapv1()
+{
+	return this->mipmap;
+}
+
+void ktexlib::KTEXFileOperation::KTEXv2::PushRGBA(uc_vector RGBA_array)
+{
+	this->RGBA_vectors.push_back(RGBA_array);
+}
+
+void ktexlib::KTEXFileOperation::KTEXv2::Convert()
+{
+
+}
+
+void ktexlib::KTEXFileOperation::KTEXv2::LoadKTEX(std::experimental::filesystem::path filepath)
+{
+
+}
+
+void ktexlib::KTEXFileOperation::operator+=(KTEXv2 dest, mipmapv2 src)
+{
+	dest.mipmaps.push_back(src);
+}
+
+void ktexlib::KTEXFileOperation::operator+=(KTEXv2 dest, uc_vector src)
+{
+	dest.RGBA_vectors.push_back(src);
 }

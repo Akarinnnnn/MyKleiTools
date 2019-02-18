@@ -63,8 +63,16 @@ namespace ktexlib
 			unsigned short Z = 1;//Z Axis
 			uc_vector data;
 		};
+		struct mipmapv2
+		{
+			unsigned short x;
+			unsigned short y;
+			unsigned short z = 0;
+			unsigned int size = 0;
+			char* data = nullptr;
+		};
 
-		typedef std::vector<mipmap> mipmap_vector;
+		typedef std::vector<mipmapv2> mipmaps;
 		typedef std::vector<uc_vector> imgs;
 		class KTEXFile
 		{
@@ -73,7 +81,7 @@ namespace ktexlib
 			void __fastcall LoadPNG(std::experimental::filesystem::path InputPngFileName, std::string output = "");//使用lodepng 
 			bool LoadKTEX(std::wstring FileName);
 			void GetRBGAImage(uc_vector& ret);
-			//KTEXFile(std::string InputKtexFileName);//加载 KTEX,没弄好
+			mipmap Getmipmapv1();
 			KTEXFile();
 			~KTEXFile();
 
@@ -83,14 +91,37 @@ namespace ktexlib
 		private:
 			size_t __fastcall KTEXMipmapGen(mipmap& target, uc_vector argb_image, unsigned short width, unsigned short height, unsigned short pitch);
 			void KTEXFirstBlockGen();
-			void __fastcall multimipmapgen(KTEXFileOperation::mipmap_vector mipmaps, imgs inputimgs);
-			std::fstream fsTEX;
-			mipmap_vector vec_mipmaps;
+			void __fastcall multimipmapgen(KTEXFileOperation::mipmaps mipmaps, imgs inputimgs);
+
+			std::fstream filestream;
+
 			imgs vec_imgs;
 			uc_vector vec_rgba;
 			uc_vector vecPNG;
-			mipmap mipmap;//暂时用着
-		};
 
+			mipmap mipmap;
+			mipmaps vec_mipmaps;
+		};
+		class KTEXv2
+		{
+		public:
+			void PushRGBA(uc_vector RGBA_array);
+			void Convert();
+			void LoadKTEX(std::experimental::filesystem::path filepath);
+
+
+
+			friend void operator+= (KTEXv2 dest, mipmapv2 src);
+			friend void operator+=(KTEXv2 dest, uc_vector src);
+
+			KTEXInfo Info;
+			std::wstring output;
+		private:
+			mipmaps mipmaps;
+			KTEXHeader Header;
+			imgs RGBA_vectors;
+		};
+		void operator+= (KTEXv2 dest,mipmapv2 src);
+		void operator+=(KTEXv2 dest, uc_vector src);
 	}
 }

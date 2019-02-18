@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+    <metadata>
+        <id>ktexlib</id>
+        <version>1.1.0</version>
+        <title>ktexlib</title>
+        <authors>Fa鸽</authors>
+        <owners>Fa鸽</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+      <license type="expression">Unlicence</license>
+      <projectUrl>https://github.com/Akarinnnnn/MyKleiTools/tree/master/ktexlib</projectUrl>
+        <description>A ktex library</description>
+        <summary></summary>
+        <copyright>Copyright (c) 2019, Fa鸽</copyright>
+        <tags>native, ktex, ktexlib, C++</tags>
+		<dependencies>
+			<group targetFramework="native0.0">
+			</group>
+		</dependencies>
+    </metadata>
+</package>

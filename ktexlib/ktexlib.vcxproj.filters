@@ -151,5 +151,6 @@
     <None Include="..\附加依赖项\squish\singlecolourlookup.inl">
       <Filter>源文件\squish</Filter>
     </None>
+    <None Include="ktexlib.nuspec" />
   </ItemGroup>
 </Project>
