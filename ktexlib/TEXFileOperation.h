@@ -15,28 +15,28 @@ namespace ktexlib
 {
 	namespace KTEXFileOperation
 	{
-		struct  //platform
+		enum class  platfrm//platform
 		{
-			char opengl = 12;
-			char xb360 = 11;
-			char ps3 = 10;
-			char unk = 0;
-		}constexpr platfrm;
-		struct  //pixel form
+			opengl = 12,
+			xb360 = 11,
+			ps3 = 10,
+			unk = 0
+		};
+		enum class pixfrm //pixel form
 		{
-			char ARGB = 4;
-			char DXT1 = 0;
-			char DXT3 = 1;
-			char DXT5 = 2;
-			char unk = 7;
-		}constexpr pixfrm;
-		struct  //texture type
+			 ARGB = 4,
+			 DXT1 = 0,
+			 DXT3 = 1,
+			 DXT5 = 2,
+			 unk = 7
+		};
+		enum class textyp //texture type
 		{
-			char d1 = 1;//1d
-			char d2 = 2;//2d
-			char d3 = 3;//3d
-			char cube = 4;//cubemap
-		}constexpr textyp;
+			d1 = 1,//1d
+			d2 = 2,//2d
+			d3 = 3,//3d
+			cube = 4//cubemap
+		};
 		typedef std::vector<unsigned char> uc_vector;
 
 		class KTEXexception :std::exception
@@ -77,9 +77,9 @@ namespace ktexlib
 		{
 			unsigned char flags = 0;
 			unsigned short mipscount = 0;
-			unsigned char texturetype = textyp.d1;
-			unsigned char pixelformat = pixfrm.DXT5;
-			unsigned char platform = platfrm.opengl;
+			textyp texturetype = textyp::d1;
+		 	pixfrm pixelformat = pixfrm::DXT5;
+			platfrm platform = platfrm::opengl;
 		};
 
 		struct mipmap
@@ -110,35 +110,7 @@ namespace ktexlib
 		
 		typedef std::vector<mipmapv2> mipmaps;
 		typedef std::vector<RGBAv2> imgs;
-		__declspec(deprecated) class KTEXFile //别用了，老版本
-		{
-		public:
-			bool ConvertFromPNG();
-			void __fastcall LoadPNG(std::experimental::filesystem::path InputPngFileName, std::string output = "");//使用lodepng 
-			bool LoadKTEX(std::wstring FileName);
-			void GetRBGAImage(uc_vector& ret);
-			mipmap Getmipmapv1();
-			KTEXFile();
-			~KTEXFile();
-
-			std::wstring output;//输出文件位置
-			KTEXHeader Header;
-			KTEXInfo Info;
-		private:
-			size_t __fastcall KTEXMipmapGen(mipmap& target, uc_vector argb_image, unsigned short width, unsigned short height, unsigned short pitch);
-			void KTEXFirstBlockGen();
-			void __fastcall multimipmapgen(KTEXFileOperation::mipmaps mipmaps, imgs inputimgs);
-
-			std::fstream filestream;
-
-			imgs vec_imgs;
-			uc_vector vec_rgba;
-			uc_vector vecPNG;
-
-			mipmap mipmap;
-			mipmaps vec_mipmaps;
-		};
-		class KTEXv2
+		class KTEX
 		{
 		public:
 			void PushRGBA(RGBAv2 RGBA_array);
@@ -148,8 +120,8 @@ namespace ktexlib
 			mipmapv2 GetRawMipmap(unsigned int pitch);
 			RGBAv2 GetImageArray(unsigned int pitch);
 			void clear();
-			KTEXv2();
-			~KTEXv2();
+			KTEX();
+			~KTEX();
 
 			void operator+=(RGBAv2 src);
 
@@ -160,6 +132,6 @@ namespace ktexlib
 			KTEXHeader Header;
 			imgs RGBA_vectors;
 		};
-		KTEXv2 operator+(KTEXv2 dest, RGBAv2 src);
+		KTEX operator+(KTEX dest, RGBAv2 src);
 	}
 }
