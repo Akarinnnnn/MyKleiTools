@@ -86,7 +86,7 @@ namespace ktexlib
 		{
 			unsigned short width = 0;
 			unsigned short height = 0;
-			unsigned short Z = 1;//Z Axis
+			unsigned short pitch = 1;//Z Axis
 			uc_vector data;
 		};
 
@@ -94,14 +94,15 @@ namespace ktexlib
 		{
 			unsigned short width;
 			unsigned short height;
+			unsigned short pitch;
 			uc_vector data;
 		};
 
 		struct mipmapv2
 		{
-			unsigned short x;
-			unsigned short y;
-			unsigned short z = 0;
+			unsigned short width;
+			unsigned short height;
+			unsigned short pitch = 0;
 			unsigned int size = 0;
 			char* data = nullptr;
 			~mipmapv2();
@@ -143,7 +144,8 @@ namespace ktexlib
 			void PushRGBA(RGBAv2 RGBA_array);
 			void Convert();
 			void LoadKTEX(std::experimental::filesystem::path filepath);
-			mipmapv2 GetMipmap(unsigned int serial);
+			mipmapv2 GetRawMipmap(unsigned int serial);
+			RGBAv2 GetImageArray(unsigned int serial);
 			void clear();
 			KTEXv2();
 			~KTEXv2();

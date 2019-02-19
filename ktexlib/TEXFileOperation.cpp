@@ -71,7 +71,7 @@ size_t __fastcall ktexlib::KTEXFileOperation::KTEXFile::KTEXMipmapGen(ktexlib::K
 	int blockcount = 0;
 	target.width = wide;
 	target.height = height;
-	target.Z = Z;
+	target.pitch = Z;
 	unsigned char* imgdata = image.data();
 #ifndef MULTI_THREAD_KTEXCONOUTPUT
 	cout << "Compressing..." << endl;
@@ -209,7 +209,7 @@ bool ktexlib::KTEXFileOperation::KTEXFile::ConvertFromPNG()
 #endif
 	ofstex.write((char*)(&mipmap.width), 2);
 	ofstex.write((char*)(&mipmap.height), 2);
-	ofstex.write((char*)(&mipmap.Z), 2);
+	ofstex.write((char*)(&mipmap.pitch), 2);
 	ofstex.write((char*)(&datasize), 4);
 	ofstex.write((char*)mipmap.data.data(), datasize);
 	
@@ -332,9 +332,17 @@ void ktexlib::KTEXFileOperation::KTEXv2::LoadKTEX(std::experimental::filesystem:
 	}
 }
 
-ktexlib::KTEXFileOperation::mipmapv2 ktexlib::KTEXFileOperation::KTEXv2::GetMipmap(unsigned int ÐòºÅ)
+ktexlib::KTEXFileOperation::mipmapv2 ktexlib::KTEXFileOperation::KTEXv2::GetRawMipmap(unsigned int ÐòºÅ)
 {
-	return this->mipmaps[ÐòºÅ];
+	for (auto a : this->mipmaps)
+		if (a.pitch == ÐòºÅ)
+			return a;
+}
+
+ktexlib::KTEXFileOperation::RGBAv2 
+ktexlib::KTEXFileOperation::KTEXv2::GetImageArray(unsigned int ÐòºÅ)
+{
+	
 }
 
 void ktexlib::KTEXFileOperation::KTEXv2::clear()
