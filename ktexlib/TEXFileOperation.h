@@ -79,7 +79,7 @@ namespace ktexlib
 			unsigned short mipscount = 0;
 			unsigned char texturetype = textyp.d1;
 			unsigned char pixelformat = pixfrm.DXT5;
-			unsigned int platform = platfrm.opengl;
+			unsigned char platform = platfrm.opengl;
 		};
 
 		struct mipmap
@@ -89,6 +89,14 @@ namespace ktexlib
 			unsigned short Z = 1;//Z Axis
 			uc_vector data;
 		};
+
+		struct RGBAv2
+		{
+			unsigned short width;
+			unsigned short height;
+			uc_vector data;
+		};
+
 		struct mipmapv2
 		{
 			unsigned short x;
@@ -100,7 +108,7 @@ namespace ktexlib
 		};
 		
 		typedef std::vector<mipmapv2> mipmaps;
-		typedef std::vector<uc_vector> imgs;
+		typedef std::vector<RGBAv2> imgs;
 		class KTEXFile
 		{
 		public:
@@ -132,15 +140,15 @@ namespace ktexlib
 		class KTEXv2
 		{
 		public:
-			void PushRGBA(uc_vector RGBA_array);
+			void PushRGBA(RGBAv2 RGBA_array);
 			void Convert();
 			void LoadKTEX(std::experimental::filesystem::path filepath);
 			mipmapv2 GetMipmap(unsigned int serial);
 			void clear();
+			KTEXv2();
 			~KTEXv2();
 
-			friend void operator+= (KTEXv2 dest, mipmapv2 src);
-			friend void operator+=(KTEXv2 dest, uc_vector src);
+			void operator+=(RGBAv2 src);
 
 			KTEXInfo Info;
 			std::wstring output;
@@ -149,7 +157,6 @@ namespace ktexlib
 			KTEXHeader Header;
 			imgs RGBA_vectors;
 		};
-		void operator+= (KTEXv2 dest,mipmapv2 src);
-		void operator+=(KTEXv2 dest, uc_vector src);
+		void operator+(KTEXv2 dest, RGBAv2 src);
 	}
 }

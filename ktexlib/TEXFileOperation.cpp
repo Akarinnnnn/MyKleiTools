@@ -138,17 +138,21 @@ void mipmapsgen(const ktexlib::KTEXFileOperation::imgs I, ktexlib::KTEXFileOpera
 		{
 			using namespace squish;
 		case (pixfrm.ARGB):
-			temp.size = img.size();
-			temp.data = (char*)img.data();
+			temp.size = img.data.size();
+			temp.data = (char*)img.data.data();
 			break;
 		case (pixfrm.DXT1):
 			//target.data.resize(GetStorageRequirements(wide, height, kDxt1));
-			temp.size = GetStorageRequirements()
+			temp.size = GetStorageRequirements(img.width,img.height,kDxt1);
+
 			break;
 		case (pixfrm.DXT3):
+			temp.size = GetStorageRequirements(img.width, img.height, kDxt3);
 
 			break;
 		case (pixfrm.DXT5):
+			temp.size = GetStorageRequirements(img.width, img.height, kDxt5);
+
 			break;
 		default:
 			throw std::invalid_argument("::mipmapsgen(TEXFileOperation.cpp) 像素格式参数错误");
@@ -233,30 +237,10 @@ void __fastcall ktexlib::KTEXFileOperation::KTEXFile::LoadPNG(std::experimental:
 	{
 		cout << "at" + I.string() + ",\n" << lodepng_error_text(28) << endl;
 	}
-	/*if (err != 0)
-	{
-		string what = "lodepng error,";
-		what += lodepng_error_text(err);
-		throw std::exception(what.c_str());
-	}*/
 }
 
 inline void __fastcall parseheader(ktexlib::KTEXFileOperation::KTEXHeader header, ktexlib::KTEXFileOperation::KTEXInfo& info)
 {
-	/*
-	firstblock |= 0xFFF;//自己写的有bug，干脆复制粘贴
-	firstblock <<= 2;
-	firstblock |= (unsigned int)Info.flags;
-	firstblock <<= 5;
-	firstblock |= Info.mipscount;
-	firstblock <<= 4;
-	firstblock |= Info.texturetype;
-	firstblock <<= 5;
-	firstblock |= Info.pixelformat;
-	firstblock <<= 4;
-	firstblock |= Info.platform;
-	*/
-	//20
 	info.flags			 = (header.firstblock & 0x000C0000) >>18;
 	info.mipscount		 = (header.firstblock & 0x0003E000) >>13;
 	info.texturetype	 = (header.firstblock & 0x00001E00) >>9;
@@ -312,14 +296,10 @@ ktexlib::KTEXFileOperation::mipmap ktexlib::KTEXFileOperation::KTEXFile::Getmipm
 	return this->mipmap;
 }
 
-void ktexlib::KTEXFileOperation::KTEXv2::PushRGBA(uc_vector RGBA_array)
+void ktexlib::KTEXFileOperation::KTEXv2::PushRGBA(ktexlib::KTEXFileOperation::RGBAv2 RGBA_array)
 {
 	this->RGBA_vectors.push_back(RGBA_array);
 }
-
-
-
-
 
 void ktexlib::KTEXFileOperation::KTEXv2::Convert()
 {
@@ -364,22 +344,30 @@ void ktexlib::KTEXFileOperation::KTEXv2::clear()
 	
 }
 
+ktexlib::KTEXFileOperation::KTEXv2::KTEXv2()
+{
+	this->mipmaps.reserve(5);
+	this->RGBA_vectors.reserve(5);
+}
+
 ktexlib::KTEXFileOperation::KTEXv2::~KTEXv2()
 {
 	//do nothing.
 }
 
-void ktexlib::KTEXFileOperation::operator+=(KTEXv2 dest, mipmapv2 src)
+void ktexlib::KTEXFileOperation::KTEXv2::operator+=(ktexlib::KTEXFileOperation::RGBAv2 src)
 {
-	dest.mipmaps.push_back(src);
+	this->RGBA_vectors.push_back(src);
 }
 
-void ktexlib::KTEXFileOperation::operator+=(KTEXv2 dest, uc_vector src)
+void ktexlib::KTEXFileOperation::operator+(KTEXv2 L, ktexlib::KTEXFileOperation::RGBAv2 R)
 {
-	dest.RGBA_vectors.push_back(src);
+	KTEXv2 temp;
+	temp.PushRGBA(R);
 }
 
 ktexlib::KTEXFileOperation::mipmapv2::~mipmapv2()
 {
 	delete[] this->data;
+	this->size = 0;
 }
