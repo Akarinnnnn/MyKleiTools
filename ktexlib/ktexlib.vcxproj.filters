@@ -102,6 +102,9 @@
     <ClInclude Include="..\附加依赖项\squish\squish.h">
       <Filter>头文件\squish</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="TEXFileOperation.cpp">
@@ -152,5 +155,21 @@
       <Filter>源文件\squish</Filter>
     </None>
     <None Include="ktexlib.nuspec" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ktexlib.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\12072\Pictures\私货\1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="C:\Users\12072\Pictures\私货\2.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="C:\Users\12072\Pictures\私货\3.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

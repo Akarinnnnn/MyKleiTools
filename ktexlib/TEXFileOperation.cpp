@@ -66,6 +66,11 @@ void ktexlib::KTEXFileOperation::KTEX::PushRGBA(RGBAv2 RGBA_array, unsigned int 
 void ktexlib::KTEXFileOperation::KTEX::Convert()
 {
 	//生成第一数据块
+	//必要检查
+	if (Info.mipscount > 0x1F)
+	{
+		throw std::out_of_range("too much mipmaps, max 32.");
+	}
 	Header.firstblock = 0xFFF00000;//保留，不排除未来官方会用
 	Header.firstblock |= Info.flags		  << 18;
 	Header.firstblock |= Info.mipscount	  << 13;
@@ -96,20 +101,42 @@ void ktexlib::KTEXFileOperation::KTEX::Convert()
 		//转换
 		switch (Info.pixelformat)
 		{
+			using namespace squish;
 		case(pixfrm::ARGB):
+			temp.size = img.data.size();
+			temp.data = (char*)img.data.data();
 			break;
 		case(pixfrm::DXT1):
+			temp.size = GetStorageRequirements(img.width, img.height, kDxt1);
+			char* data = new char[temp.size];
+			CompressImage(img.data.data(), img.width, img.height, data, kDxt1);
+			temp.data = data;
 			break;
 		case(pixfrm::DXT3):
+			temp.size = GetStorageRequirements(img.width, img.height, kDxt3);
+			char* data = new char[temp.size];
+			CompressImage(img.data.data(), img.width, img.height, data, kDxt3);
+			temp.data = data;
 			break;
 		case(pixfrm::DXT5):
+			temp.size = GetStorageRequirements(img.width, img.height, kDxt5);
+			char* data = new char[temp.size];
+			CompressImage(img.data.data(), img.width, img.height, data, kDxt5);
+			temp.data = data;
 			break;
 		default:
 			throw std::invalid_argument("Wrong pixel format");
 		}
 	}
 	//写入文件
-
+	ofstream file(output, ios::trunc | ios::binary);
+	file.write((char*)(&this->Header), 8);//文件头(CC4+第一数据块)
+	for (auto mipmap : this->mipmaps)//分别写入mipmaps
+	{
+		file.write((char*)(&mipmap), 10);
+		file.write(mipmap.data, mipmap.size);
+	}
+	file.close();
 }
 
 void ktexlib::KTEXFileOperation::KTEX::LoadKTEX(std::experimental::filesystem::path filepath)
@@ -182,6 +209,11 @@ ktexlib::KTEXFileOperation::KTEX ktexlib::KTEXFileOperation::operator+(KTEX L, k
 	KTEX temp(L);
 	temp.PushRGBA(R);
 	return temp;
+}
+
+void ktexlib::KTEXFileOperation::KTEX2PNG(KTEX target)
+{
+
 }
 
 ktexlib::KTEXFileOperation::mipmapv2::~mipmapv2()

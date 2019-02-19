@@ -201,6 +201,7 @@
     <ClInclude Include="..\附加依赖项\squish\singlecolourfit.h" />
     <ClInclude Include="..\附加依赖项\squish\squish.h" />
     <ClInclude Include="AltasGen.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TEXFileOperation.h" />
@@ -231,6 +232,14 @@
     <None Include="ktexlib.nuspec">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ktexlib.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="C:\Users\12072\Pictures\私货\1.bmp" />
+    <Image Include="C:\Users\12072\Pictures\私货\2.bmp" />
+    <Image Include="C:\Users\12072\Pictures\私货\3.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

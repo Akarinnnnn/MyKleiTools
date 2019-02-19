@@ -122,7 +122,7 @@ namespace ktexlib
 			void clear();
 			KTEX();
 			~KTEX();
-
+			friend void KTEX2PNG(KTEX target);
 			void operator+=(RGBAv2 src);
 
 			KTEXInfo Info;
@@ -133,5 +133,6 @@ namespace ktexlib
 			imgs RGBA_vectors;
 		};
 		KTEX operator+(KTEX dest, RGBAv2 src);
+		void KTEX2PNG(KTEX target);
 	}
 }
