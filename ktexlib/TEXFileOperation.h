@@ -69,7 +69,7 @@ namespace ktexlib
 			//CC4
 			unsigned int cc4 = 0x5845544B;
 			//第一数据块
-			unsigned int firstblock = 0xFFF00000;
+			unsigned int firstblock = 0;
 			//0xFFF 12bit, flags 2bit, mipscount 5bit, textype 4bit
 			//pixelformat 5bit, platform 4bit
 		};
@@ -92,17 +92,17 @@ namespace ktexlib
 
 		struct RGBAv2
 		{
-			unsigned short width;
-			unsigned short height;
-			unsigned short pitch;
+			unsigned short width=0;
+			unsigned short height=0;
+			unsigned int pitch=0;
 			uc_vector data;
 		};
 
 		struct mipmapv2
 		{
-			unsigned short width;
-			unsigned short height;
-			unsigned short pitch = 0;
+			unsigned short width =0;
+			unsigned short height=0;
+			unsigned int pitch = 0;
 			unsigned int size = 0;
 			char* data = nullptr;
 			~mipmapv2();
@@ -110,7 +110,7 @@ namespace ktexlib
 		
 		typedef std::vector<mipmapv2> mipmaps;
 		typedef std::vector<RGBAv2> imgs;
-		class KTEXFile
+		__declspec(deprecated) class KTEXFile //别用了，老版本
 		{
 		public:
 			bool ConvertFromPNG();
@@ -142,10 +142,11 @@ namespace ktexlib
 		{
 		public:
 			void PushRGBA(RGBAv2 RGBA_array);
+			void PushRGBA(RGBAv2 RGBA_array, unsigned int pitch);
 			void Convert();
 			void LoadKTEX(std::experimental::filesystem::path filepath);
-			mipmapv2 GetRawMipmap(unsigned int serial);
-			RGBAv2 GetImageArray(unsigned int serial);
+			mipmapv2 GetRawMipmap(unsigned int pitch);
+			RGBAv2 GetImageArray(unsigned int pitch);
 			void clear();
 			KTEXv2();
 			~KTEXv2();
@@ -159,6 +160,6 @@ namespace ktexlib
 			KTEXHeader Header;
 			imgs RGBA_vectors;
 		};
-		void operator+(KTEXv2 dest, RGBAv2 src);
+		KTEXv2 operator+(KTEXv2 dest, RGBAv2 src);
 	}
 }
