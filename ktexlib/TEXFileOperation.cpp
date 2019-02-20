@@ -144,7 +144,7 @@ void ktexlib::KTEXFileOperation::KTEX::Convert()
 
 void ktexlib::KTEXFileOperation::KTEX::LoadKTEX(std::experimental::filesystem::path filepath)
 {
-	ifstream file(std::experimental::filesystem::canonical(filepath), ios::binary);
+	fstream file(filepath, ios::in | ios::binary);
 	if (!file.is_open())
 	{
 		throw KTEXexception("failed to open specified file.", -1);
@@ -158,11 +158,12 @@ void ktexlib::KTEXFileOperation::KTEX::LoadKTEX(std::experimental::filesystem::p
 	parseheader(this->Header, this->Info);
 	for (unsigned int i = 0; i < Info.mipscount; i++)
 	{
-		this->mipmaps.push_back(mipmapv2());
-		mipmapv2& target = mipmaps[i];
+		mipmapv2 target = mipmaps[i];
 		file.read((char*)(&target), 10);
 		auto temp = new char[target.size];
 		file.read(temp, target.size);
+		target.data = temp;
+		this->mipmaps.push_back(target);
 	}
 	auto R = std::rand() % (3 + 1);
 	file.close();
