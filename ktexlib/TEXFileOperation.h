@@ -102,7 +102,7 @@ namespace ktexlib
 		{
 			unsigned short width =0;
 			unsigned short height=0;
-			unsigned int pitch = 0;
+			unsigned short pitch = 0;
 			unsigned int size = 0;
 			char* data = nullptr;
 			~mipmapv2();
