@@ -158,7 +158,7 @@ void ktexlib::KTEXFileOperation::KTEX::LoadKTEX(std::experimental::filesystem::p
 	parseheader(this->Header, this->Info);
 	for (unsigned int i = 0; i < Info.mipscount; i++)
 	{
-		mipmapv2 target = mipmaps[i];
+		mipmapv2 target;
 		file.read((char*)(&target), 10);
 		auto temp = new char[target.size];
 		file.read(temp, target.size);
@@ -223,6 +223,7 @@ void ktexlib::KTEXFileOperation::KTEX2PNG(KTEX target)
 
 ktexlib::KTEXFileOperation::mipmapv2::~mipmapv2()
 {
-	delete[] this->data;
+	if(this->data == nullptr)
+		delete[] this->data;
 	this->size = 0;
 }
