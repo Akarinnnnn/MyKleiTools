@@ -156,14 +156,15 @@ void ktexlib::KTEXFileOperation::KTEX::LoadKTEX(std::experimental::filesystem::p
 	}
 	output = filepath.stem().wstring() + L".tex";
 	parseheader(this->Header, this->Info);
+	mipmaps.resize(Info.mipscount);
 	for (unsigned int i = 0; i < Info.mipscount; i++)
 	{
-		mipmapv2 target;
-		file.read((char*)(&target), 10);
+		mipmapv2& target = mipmaps[i];
+		file.read((char*)(&target), 6);
+		file.read((char*)(&target.size), 4);
 		auto temp = new char[target.size];
 		file.read(temp, target.size);
 		target.data = temp;
-		this->mipmaps.push_back(target);
 	}
 	auto R = std::rand() % (3 + 1);
 	file.close();
@@ -225,5 +226,6 @@ ktexlib::KTEXFileOperation::mipmapv2::~mipmapv2()
 {
 	if(this->data == nullptr)
 		delete[] this->data;
+	this->data = nullptr;
 	this->size = 0;
 }
