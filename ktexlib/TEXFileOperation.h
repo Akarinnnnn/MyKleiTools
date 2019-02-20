@@ -39,7 +39,7 @@ namespace ktexlib
 		};
 		typedef std::vector<unsigned char> uc_vector;
 
-		class KTEXexception :std::exception
+		class KTEXexception :public std::exception
 		{
 		public:
 			~KTEXexception() noexcept

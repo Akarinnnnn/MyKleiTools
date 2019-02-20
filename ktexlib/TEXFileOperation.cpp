@@ -3,7 +3,9 @@
 #include <lodepng/lodepng.h>
 #include <squish/squish.h>
 #include "AltasGen.h"
-
+#if _WIN32
+#include <Windows.h>//¼Ð´øË½»õ
+#endif
 
 #include "TEXFileOperation.h"
 
@@ -99,6 +101,7 @@ void ktexlib::KTEXFileOperation::KTEX::Convert()
 			}
 		}
 		//×ª»»
+		char* data = nullptr;
 		switch (Info.pixelformat)
 		{
 			using namespace squish;
@@ -108,19 +111,19 @@ void ktexlib::KTEXFileOperation::KTEX::Convert()
 			break;
 		case(pixfrm::DXT1):
 			temp.size = GetStorageRequirements(img.width, img.height, kDxt1);
-			char* data = new char[temp.size];
+			data = new char[temp.size];
 			CompressImage(img.data.data(), img.width, img.height, data, kDxt1);
 			temp.data = data;
 			break;
 		case(pixfrm::DXT3):
 			temp.size = GetStorageRequirements(img.width, img.height, kDxt3);
-			char* data = new char[temp.size];
+			data = new char[temp.size];
 			CompressImage(img.data.data(), img.width, img.height, data, kDxt3);
 			temp.data = data;
 			break;
 		case(pixfrm::DXT5):
 			temp.size = GetStorageRequirements(img.width, img.height, kDxt5);
-			char* data = new char[temp.size];
+			data = new char[temp.size];
 			CompressImage(img.data.data(), img.width, img.height, data, kDxt5);
 			temp.data = data;
 			break;
@@ -141,7 +144,7 @@ void ktexlib::KTEXFileOperation::KTEX::Convert()
 
 void ktexlib::KTEXFileOperation::KTEX::LoadKTEX(std::experimental::filesystem::path filepath)
 {
-	ifstream file(filepath, ios::binary);
+	ifstream file(std::experimental::filesystem::canonical(filepath), ios::binary);
 	if (!file.is_open())
 	{
 		throw KTEXexception("failed to open specified file.", -1);
@@ -161,6 +164,7 @@ void ktexlib::KTEXFileOperation::KTEX::LoadKTEX(std::experimental::filesystem::p
 		auto temp = new char[target.size];
 		file.read(temp, target.size);
 	}
+	auto R = std::rand() % (3 + 1);
 	file.close();
 }
 
