@@ -161,7 +161,7 @@ void ktexlib::KTEXFileOperation::KTEX::LoadKTEX(std::experimental::filesystem::p
 	{
 		mipmapv2& target = mipmaps[i];
 		file.read((char*)(&target), 6);
-		file.read((char*)(&target.size), 4);
+		file.read((char*)(&target.size), 4);//估计是对齐问题
 		auto temp = new char[target.size];
 		file.read(temp, target.size);
 		target.data = temp;
@@ -170,7 +170,7 @@ void ktexlib::KTEXFileOperation::KTEX::LoadKTEX(std::experimental::filesystem::p
 	file.close();
 }
 
-ktexlib::KTEXFileOperation::mipmapv2 ktexlib::KTEXFileOperation::KTEX::GetRawMipmap(unsigned int pitch)
+ktexlib::KTEXFileOperation::mipmapv2 ktexlib::KTEXFileOperation::KTEX::GetMipmapByPitch(unsigned int pitch)
 {
 	for (auto a : this->mipmaps)
 		if (a.pitch == pitch)
@@ -178,7 +178,49 @@ ktexlib::KTEXFileOperation::mipmapv2 ktexlib::KTEXFileOperation::KTEX::GetRawMip
 	throw std::invalid_argument("no such mipmap");
 }
 
-ktexlib::KTEXFileOperation::RGBAv2 
+ktexlib::KTEXFileOperation::mipmapv2 ktexlib::KTEXFileOperation::KTEX::GetMipmap(size_t order)
+{
+	return this->mipmaps[order];
+}
+
+ktexlib::KTEXFileOperation::RGBAv2 ktexlib::KTEXFileOperation::KTEX::GetImageFromMipmap(size_t order)
+{
+	auto& tmpmipmap = this->mipmaps[order];
+	RGBAv2 tempRGBA =
+	{
+		tmpmipmap.width,
+		tmpmipmap.height,
+		tmpmipmap.pitch
+	};
+	if (Info.pixelformat == pixfrm::ARGB)
+	{
+		tempRGBA.data.reserve(tmpmipmap.size + 10);
+		tempRGBA.data.assign(tmpmipmap.data, tmpmipmap.data + tmpmipmap.size + 1);
+	}
+	else
+	{
+		int flag = 0;
+		switch (this->Info.pixelformat)
+		{
+		case(pixfrm::DXT5):
+			flag = squish::kDxt5;
+			break;
+		case(pixfrm::DXT1):
+			flag = squish::kDxt1;
+			break;
+		case(pixfrm::DXT3):
+			flag = squish::kDxt3;
+			break;
+		default:
+			throw KTEXexception("Invalid pixelformat", 2);
+		}
+		tempRGBA.data.resize(tmpmipmap.height * tmpmipmap.width * 4);
+		squish::DecompressImage(tempRGBA.data.data(), tmpmipmap.width, tmpmipmap.height, tmpmipmap.data, flag);
+	}
+	return tempRGBA;
+}
+
+ktexlib::KTEXFileOperation::RGBAv2
 ktexlib::KTEXFileOperation::KTEX::GetImageArray(unsigned int pitch)
 {
 	for (auto a : this->RGBA_vectors)
@@ -208,6 +250,11 @@ ktexlib::KTEXFileOperation::KTEX::~KTEX()
 void ktexlib::KTEXFileOperation::KTEX::operator+=(ktexlib::KTEXFileOperation::RGBAv2 src)
 {
 	this->RGBA_vectors.push_back(src);
+}
+
+ktexlib::KTEXFileOperation::RGBAv2* ktexlib::KTEXFileOperation::KTEX::operator[](int i)
+{
+	return RGBA_vectors.data() + i;
 }
 
 ktexlib::KTEXFileOperation::KTEX ktexlib::KTEXFileOperation::operator+(KTEX L, ktexlib::KTEXFileOperation::RGBAv2 R)

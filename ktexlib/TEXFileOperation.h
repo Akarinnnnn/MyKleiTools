@@ -117,13 +117,16 @@ namespace ktexlib
 			void PushRGBA(RGBAv2 RGBA_array, unsigned int pitch);
 			void Convert();
 			void LoadKTEX(std::experimental::filesystem::path filepath);
-			mipmapv2 GetRawMipmap(unsigned int pitch);
+			mipmapv2 GetMipmapByPitch(unsigned int pitch);
+			mipmapv2 GetMipmap(size_t order);
+			RGBAv2 GetImageFromMipmap(size_t order);
 			RGBAv2 GetImageArray(unsigned int pitch);
 			void clear();
 			KTEX();
 			~KTEX();
 			friend void KTEX2PNG(KTEX target);
 			void operator+=(RGBAv2 src);
+			RGBAv2* operator[](int i);
 
 			KTEXInfo Info;
 			std::wstring output;
