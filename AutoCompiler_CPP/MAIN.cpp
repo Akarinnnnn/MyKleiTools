@@ -4,7 +4,7 @@
 #include "pch.h"
 #include <iostream>
 #include <filesystem>
-#include "..\ktexlib\TEXFileOperation.h"
+#include "TEXFileOperation.h"
 #include "lodepng.h"
 
 //#define FUNCTEST//测试开关
