@@ -8,3 +8,4 @@ constexpr auto s5 = L"开始遍历文件";//......
 constexpr auto s6 = L"文件/文件夹名乱码";//gamble
 constexpr auto s7 = L"开始转换";
 constexpr auto s8 = L"完成";//Done.
+constexpr auto s9 = L"开始清理";

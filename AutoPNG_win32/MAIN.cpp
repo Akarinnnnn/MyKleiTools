@@ -13,12 +13,14 @@
 #include <exception>
 #include <system_error>
 #include <mutex>
+//PNG处理
+#include <lodepng.h>
 //Win32
 #ifdef _WIN32
-#include "windows.h"//Linux把这个去了
+#include "windows.h"
 #endif
 #define MULTI_THREAD_KTEXCONOUTPUT
-#include "..\ktexlib\TEXFileOperation.h"
+#include "TEXFileOperation.h"
 
 //可能的注册表项: HKEY_CURRENT_USER\System\GameConfigStore\Children\2c1ae850-e27e-4f10-a985-2dd951d15ba4
 //
@@ -26,43 +28,70 @@ using namespace std;
 
 namespace MAIN
 {
-	std::mutex mutex;
+	std::mutex strmutex;
+	std::mutex imutex;
+	std::mutex con;
 	std::vector<string> PNGs;
 }
-void convert_func(vector<string>& str,unsigned long long& statuses,unsigned char converterID)
+void convert_func(vector<string>& str,unsigned int& i)
 {
-	MACROSETLOCALE;
 	string pngfile;
-	bool status=false;
-	while (!status)
+	lodepng::State pngstate;
+	ktexlib::KTEXFileOperation::uc_vector pngfvec;
+	ktexlib::KTEXFileOperation::KTEX ktexop;
+	ktexlib::KTEXFileOperation::RGBAv2 rgba;
+	while (true)
 	{
-		MAIN::mutex.lock();
+		MAIN::strmutex.lock();
 		if (str.empty())
 		{
-			MAIN::mutex.unlock();
-			status = true;
-			continue;
+			MAIN::strmutex.unlock();
+			str.shrink_to_fit();
+			break;
 		}
-
 		pngfile = *(str.end() - 1);
 		str.pop_back();
-		MAIN::mutex.unlock();
-
-		ktexlib::KTEXFileOperation::KTEXFile KTEX;
-		KTEX.LoadPNG(pngfile);
-		KTEX.ConvertFromPNG();
+		MAIN::strmutex.unlock();
+		ktexop.clear();
+		lodepng::load_file(pngfvec, pngfile);
+		unsigned int w, h = 0;
+		auto ret = lodepng::decode(rgba.data, w, h, pngstate, pngfvec);
+		//判断
+		if (ret!=0)
+		{
+			cerr << lodepng_error_text(ret) << endl;
+			continue;
+		}
+		if (w > USHRT_MAX || h > USHRT_MAX)
+			continue;
+		//赋值
+		rgba.width = w;
+		rgba.height = h;
+		ktexop.output = filesystem::path(pngfile).filename().wstring() + L".tex";
+		MAIN::con.lock();
+		wcout << ktexop.output << endl;
+		MAIN::con.unlock();
+		//转换
+		ktexop.PushRGBA(rgba,1);
+		
+		ktexop.Convert();
+		//清理
+		ktexop.clear();
+		rgba.data.clear();
+		pngfvec.clear();
 	}
-	statuses |= (1i64 << converterID);
+	MAIN::imutex.lock();
+	i++;
+	MAIN::imutex.unlock();
 }
 
 int wmain(int argc,wchar_t* argv[])
  {
-	MACROSETLOCALE;
+	wcout.imbue(locale("chs"));
 	////////////////////也是MSVC特色/////////////////////////
 	using namespace std::filesystem;
 	using namespace MAIN;
 	unsigned long buffiersize = MAX_PATH;
-	regex PNGsuffix("(.*)(.png)", regex_constants::icase);
 	wstring modspath;
 	wchar_t GameBinPath[MAX_PATH]{ 0 };
 	bool 清理 = false;
@@ -101,7 +130,7 @@ int wmain(int argc,wchar_t* argv[])
 	//清理
 	if (清理)
 	{
-		std::wcout << s4 << endl;
+		std::wcout << s9 << endl;
 		for (auto dir : recursive_directory_iterator(mods))
 		{
 			if (dir.is_regular_file())
@@ -111,8 +140,7 @@ int wmain(int argc,wchar_t* argv[])
 				{
 					const wstring file = canonical(filepath).wstring();
 					std::wcout << file << endl;
-					/////////////WINAPI/////////////
-					DeleteFileW(file.c_str());
+					filesystem::remove(filepath);
 				}
 			}
 		}
@@ -123,15 +151,27 @@ int wmain(int argc,wchar_t* argv[])
 	std::wcout << s5 << endl;
 	for (auto dir : directory_iterator(mods))
 	{
+		regex png(".png", regex_constants::icase);
 		if (dir.is_directory())
 		{
 			try
 			{
 				auto images = canonical(dir.path()) / "images";
+				auto bp = canonical(dir.path()) / "bigportraits";
 				for (auto entries : recursive_directory_iterator(images))
 				{
+					if (
+						entries.is_regular_file() &&
+						regex_match(entries.path().stem().string(),png)
+						)
+					{
+						PNGs.push_back(entries.path().string());
+					}
+				}
+				for (auto entries : recursive_directory_iterator(bp))
+				{
 					if (entries.is_regular_file() &&
-						regex_match(entries.path().filename().string(), PNGsuffix)
+						regex_match(entries.path().stem().string(), png)
 						)
 					{
 						PNGs.push_back(entries.path().string());
@@ -169,28 +209,19 @@ int wmain(int argc,wchar_t* argv[])
 	}
 	
 	std::wcout << s7 << endl;
-
-	unsigned long long clear_status = 0;
-	unsigned long long converter_status = 0;
+	unsigned int converter_status = 0;
 	auto cpuscount = thread::hardware_concurrency();
-	for (unsigned char i = 0; i < cpuscount && i<64 ; i++)
+	for (unsigned char i = 0; i < cpuscount; i++)
 	//for(int i=0;i==0;i++)
 	{
-		clear_status |= (1i64 << i);
-		thread converter(convert_func,ref(PNGs), ref(converter_status), i);
+		thread converter(convert_func,ref(PNGs), ref(converter_status));
 		converter.detach();
 	}
-	//exception_ptr pexcetion();
-
-	//a^b = xor a b，挂机等
-	while (converter_status ^ clear_status)
+	while (converter_status!=cpuscount)
 	{
 		Sleep(1000);
 	}
 	std::wcout << s8 << endl;
 	return 0;
-
-	//在搞多线程
-	
 }
 
