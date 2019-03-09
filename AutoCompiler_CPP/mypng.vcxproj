@@ -88,7 +88,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)附加依赖项\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)ExternalLibrary\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)lib\$(Configuration)_$(PlatformShortName)\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)Build\$(Configuration)_$(PlatformShortname)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -150,6 +150,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(ProjectDir)lib\$(Configuration)_$(PlatformShortName)\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -175,7 +176,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ProjectDir)lib\$(Configuration)_$(PlatformShortName)\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>::xcopy "$(ProjectDir)lib\$(Configuration)_$(PlatformShortName)\*.dll" "$(OutputPath)" /y /c /r /f</Command>
@@ -192,11 +193,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Shared\ktexlib_dymanic\ktexlib_dymanic.vcxproj">
-      <Project>{fc0f5b70-d97a-48e5-b2a3-22301ec90493}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
