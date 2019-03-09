@@ -67,7 +67,7 @@ void convert_func(vector<string>& str,unsigned int& i)
 		//赋值
 		rgba.width = w;
 		rgba.height = h;
-		ktexop.output = filesystem::path(pngfile).filename().wstring() + L".tex";
+		ktexop.output = filesystem::path(pngfile).replace_extension(".tex");
 		MAIN::con.lock();
 		wcout << ktexop.output << endl;
 		MAIN::con.unlock();
@@ -154,55 +154,100 @@ int wmain(int argc,wchar_t* argv[])
 		regex png(".png", regex_constants::icase);
 		if (dir.is_directory())
 		{
+			auto images = canonical(dir.path()) / "images";
+			auto bp = canonical(dir.path()) / "bigportraits";
 			try
 			{
-				auto images = canonical(dir.path()) / "images";
-				auto bp = canonical(dir.path()) / "bigportraits";
 				for (auto entries : recursive_directory_iterator(images))
 				{
-					if (
-						entries.is_regular_file() &&
-						regex_match(entries.path().stem().string(),png)
-						)
+					try
 					{
-						PNGs.push_back(entries.path().string());
+						if (
+							entries.is_regular_file() &&
+							regex_match(entries.path().extension().string(),png)
+							)
+						{
+							wcout << entries.path().wstring() << endl;
+							PNGs.push_back(entries.path().string());
+						}
+					}
+					catch (std::filesystem::filesystem_error& e)
+					{
+						int errcode = e.code().value();
+						if (errcode == 3);//就是单纯的找不到文件 
+						else
+							cerr << e.what() << endl;
+					}
+					catch (system_error& e)
+					{
+						cerr << e.what() << endl;
+						if (e.code().value() == 1113)
+							std::wcout << s6 << endl;
+					}
+					catch (exception& e)
+					{
+						cerr << e.what() << endl;
+					}
+					catch (...)
+					{
+						terminate();
 					}
 				}
+			}
+			catch (std::filesystem::filesystem_error e)
+			{
+				if (e.code().value() == 3);
+				else
+					cerr << e.what() << endl;
+			}
+			try
+			{
 				for (auto entries : recursive_directory_iterator(bp))
 				{
-					if (entries.is_regular_file() &&
-						regex_match(entries.path().stem().string(), png)
-						)
+					try 
 					{
+						if (entries.is_regular_file() &&
+						regex_match(entries.path().extension().string(), png)
+						)
+						{
+						wcout << entries.path().wstring() << endl;
 						PNGs.push_back(entries.path().string());
+						}
+					}
+					catch (std::filesystem::filesystem_error& e)
+					{
+						int errcode = e.code().value();
+						if (errcode == 3)//就是单纯的找不到文件 
+						{
+						}
+						else
+						{
+							cerr << e.what() << endl;
+						}
+					}
+					catch (system_error& e)
+					{
+						cerr << e.what() << endl;
+						if (e.code().value() == 1113)
+						{
+							std::wcout << s6 << endl;
+						}
+					}
+					catch (exception& e)
+					{
+						cerr << e.what() << endl;
+					}
+					catch (...)
+					{
+						terminate();
 					}
 				}
 			}
-			catch (std::filesystem::filesystem_error& e)
+			catch (std::filesystem::filesystem_error e)
 			{
-				int errcode = e.code().value();
-				if (errcode == 3)//就是单纯的找不到文件 
-				{} 
+				if (e.code().value() == 3);
 				else
-				{
 					cerr << e.what() << endl;
-				}
-			}
-			catch (system_error& e)
-			{
-				cerr << e.what() << endl;
-				if (e.code().value() == 1113)
-				{
-					std::wcout << s6 << endl;
-				}
-			}
-			catch (exception& e)
-			{
-				cerr << e.what() << endl;
-			}
-			catch (...)
-			{
-				terminate();
 			}
 		}
 
