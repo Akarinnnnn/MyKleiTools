@@ -37,7 +37,7 @@ void convert_func(vector<string>& str,unsigned int& i)
 {
 	string pngfile;
 	lodepng::State pngstate;
-	ktexlib::KTEXFileOperation::uc_vector pngfvec;
+	ktexlib::uc_vector pngfvec;
 	ktexlib::KTEXFileOperation::KTEX ktexop;
 	ktexlib::KTEXFileOperation::RGBAv2 rgba;
 	while (true)
@@ -88,6 +88,7 @@ void convert_func(vector<string>& str,unsigned int& i)
 int wmain(int argc,wchar_t* argv[])
  {
 	wcout.imbue(locale("chs"));
+	wcerr.imbue(locale("chs"));
 	////////////////////也是MSVC特色/////////////////////////
 	using namespace std::filesystem;
 	using namespace MAIN;
@@ -190,7 +191,7 @@ int wmain(int argc,wchar_t* argv[])
 					}
 					catch (...)
 					{
-						terminate();
+						wcerr << L"未知错误" << endl;
 					}
 				}
 			}
@@ -256,15 +257,14 @@ int wmain(int argc,wchar_t* argv[])
 	std::wcout << s7 << endl;
 	unsigned int converter_status = 0;
 	auto cpuscount = thread::hardware_concurrency();
-	for (unsigned char i = 0; i < cpuscount; i++)
-	//for(int i=0;i==0;i++)
+	for (unsigned int i = 0; i < cpuscount; i++)
 	{
 		thread converter(convert_func,ref(PNGs), ref(converter_status));
 		converter.detach();
 	}
 	while (converter_status!=cpuscount)
 	{
-		Sleep(1000);
+		Sleep(500);
 	}
 	std::wcout << s8 << endl;
 	return 0;
