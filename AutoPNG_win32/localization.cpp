@@ -64,21 +64,21 @@ localization::localization()
 
 std::wstring& localization::operator[](unsigned short i)
 {
+	static wstring r1 = L"\n";
 	try
 	{
 		wstring& r = table[i];
 		return r;
 	}
-	catch (const std::out_of_range& e)
+	catch (const std::out_of_range&)
 	{
-		wstring r1 = L"\n";
 		return  r1;
 	}
 	catch (const std::exception& e)
 	{
 		cerr << e.what() << endl;
 	}
-	wstring r1 = L"\n";
+
 	return r1;
 }
 
