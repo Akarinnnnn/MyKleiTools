@@ -87,8 +87,7 @@ void convert_func(vector<string>& str,unsigned int& i)
 
 int wmain(int argc,wchar_t* argv[])
  {
-	wcout.imbue(locale("chs"));
-	wcerr.imbue(locale("chs"));
+	localization local;
 	////////////////////也是MSVC特色/////////////////////////
 	using namespace std::filesystem;
 	unsigned long buffiersize = MAX_PATH;
@@ -111,8 +110,8 @@ int wmain(int argc,wchar_t* argv[])
 			modspath = argv[0];
 			break;
 		case(L'c'):
-			std::wcout << s1 << endl
-				<< s2 << endl;
+			std::wcout << local[1] << endl
+				<< local[2] << endl;
 			std::getline(wcin, modspath);
 			清理 = true;
 			break;
@@ -121,7 +120,7 @@ int wmain(int argc,wchar_t* argv[])
 		}
 		break;
 	default:
-		std::wcout << s3 << endl;
+		std::wcout << local[3] << endl;
 		std::getline(wcin, modspath);
 		break;
 	}
@@ -130,14 +129,14 @@ int wmain(int argc,wchar_t* argv[])
 	//清理
 	if (清理)
 	{
-		std::wcout << s9 << endl;
+		std::wcout << local[8] << endl;
 		for (auto dir : recursive_directory_iterator(mods))
 		{
 			if (dir.is_regular_file())
 			{
 				auto filepath = dir.path();
-				auto filename = filepath.extension().wstring();
-				if (regex_match(filename, wregex(L".tex", wregex::icase)) || regex_match(filename,wregex(L".xml",wregex::icase)))
+				auto fileext = filepath.extension().wstring();
+				if (regex_match(fileext, wregex(L".tex", wregex::icase)) || regex_match(fileext,wregex(L".xml",wregex::icase)))
 				{
 					const wstring file = canonical(filepath).wstring();
 					std::wcout << file << endl;
@@ -149,7 +148,7 @@ int wmain(int argc,wchar_t* argv[])
 	}
 
 	MAIN::PNGs.reserve(40);
-	std::wcout << s5 << endl;
+	std::wcout << local[5] << endl;
 	for (auto dir : directory_iterator(mods))
 	{
 		regex png(".png", regex_constants::icase);
@@ -183,7 +182,7 @@ int wmain(int argc,wchar_t* argv[])
 					{
 						cerr << e.what() << endl;
 						if (e.code().value() == 1113)
-							std::wcout << s6 << endl;
+							std::wcout << local[6] << endl;
 					}
 					catch (exception& e)
 					{
@@ -231,7 +230,7 @@ int wmain(int argc,wchar_t* argv[])
 						cerr << e.what() << endl;
 						if (e.code().value() == 1113)
 						{
-							std::wcout << s6 << endl;
+							std::wcout << local[6] << endl;
 						}
 					}
 					catch (exception& e)
@@ -254,7 +253,7 @@ int wmain(int argc,wchar_t* argv[])
 
 	}
 	
-	std::wcout << s7 << endl;
+	std::wcout << local[4] << endl;
 	unsigned int converter_status = 0;
 	auto cpuscount = thread::hardware_concurrency();
 	for (unsigned int i = 0; i < cpuscount; i++)
@@ -266,6 +265,6 @@ int wmain(int argc,wchar_t* argv[])
 	{
 		Sleep(500);
 	}
-	std::wcout << s8 << endl;
+	std::wcout << local[7] << endl;
 	return 0;
 }

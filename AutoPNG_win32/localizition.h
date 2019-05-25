@@ -1,10 +1,11 @@
 #pragma once
-#include <vector>
+#include <map>
 #include <string>
 
-class localizition
+class localization
 {
 public:
-	std::vector<std::wstring> list;
-	localizition();
+	std::map<uint16_t, std::wstring> table; //k-v table?
+	localization();
+	std::wstring& operator[](unsigned short i);
 };
