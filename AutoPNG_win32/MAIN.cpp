@@ -2,7 +2,7 @@
 //
 
 #include "pch.h"
-#include "stringslist_CHS.h"
+#include "localizition.h"
 
 //STL
 #include <iostream>
@@ -49,7 +49,7 @@ void convert_func(vector<string>& str,unsigned int& i)
 			str.shrink_to_fit();
 			break;
 		}
-		pngfile = *(str.end() - 1);
+		pngfile = str.back();
 		str.pop_back();
 		MAIN::strmutex.unlock();
 		ktexop.clear();
@@ -91,7 +91,6 @@ int wmain(int argc,wchar_t* argv[])
 	wcerr.imbue(locale("chs"));
 	////////////////////也是MSVC特色/////////////////////////
 	using namespace std::filesystem;
-	using namespace MAIN;
 	unsigned long buffiersize = MAX_PATH;
 	wstring modspath;
 	wchar_t GameBinPath[MAX_PATH]{ 0 };
@@ -137,7 +136,8 @@ int wmain(int argc,wchar_t* argv[])
 			if (dir.is_regular_file())
 			{
 				auto filepath = dir.path();
-				if (regex_match(filepath.filename().string(), regex("(.*)(.tex)", regex::icase)))
+				auto filename = filepath.extension().wstring();
+				if (regex_match(filename, wregex(L".tex", wregex::icase)) || regex_match(filename,wregex(L".xml",wregex::icase)))
 				{
 					const wstring file = canonical(filepath).wstring();
 					std::wcout << file << endl;
@@ -148,7 +148,7 @@ int wmain(int argc,wchar_t* argv[])
 		return 1;
 	}
 
-	PNGs.reserve(40);
+	MAIN::PNGs.reserve(40);
 	std::wcout << s5 << endl;
 	for (auto dir : directory_iterator(mods))
 	{
@@ -169,7 +169,7 @@ int wmain(int argc,wchar_t* argv[])
 							)
 						{
 							wcout << entries.path().wstring() << endl;
-							PNGs.push_back(entries.path().string());
+							MAIN::PNGs.push_back(entries.path().string());
 						}
 					}
 					catch (std::filesystem::filesystem_error& e)
@@ -212,7 +212,7 @@ int wmain(int argc,wchar_t* argv[])
 						)
 						{
 						wcout << entries.path().wstring() << endl;
-						PNGs.push_back(entries.path().string());
+						MAIN::PNGs.push_back(entries.path().string());
 						}
 					}
 					catch (std::filesystem::filesystem_error& e)
@@ -259,7 +259,7 @@ int wmain(int argc,wchar_t* argv[])
 	auto cpuscount = thread::hardware_concurrency();
 	for (unsigned int i = 0; i < cpuscount; i++)
 	{
-		thread converter(convert_func,ref(PNGs), ref(converter_status));
+		thread converter(convert_func,ref(MAIN::PNGs), ref(converter_status));
 		converter.detach();
 	}
 	while (converter_status!=cpuscount)
@@ -269,4 +269,3 @@ int wmain(int argc,wchar_t* argv[])
 	std::wcout << s8 << endl;
 	return 0;
 }
-

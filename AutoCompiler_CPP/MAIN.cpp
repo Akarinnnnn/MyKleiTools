@@ -18,14 +18,11 @@ int wmain(int argc, const wchar_t* argv[])
 	{
 		cout << "Warning: failed to set the codepage to 936, \nconsole outputs may garbled" << endl;
 	}
-	string input(argv[1]+0, argv[1]+
-		[argv]()
+	char input[1024] = { 0 };
 	{
-		size_t i = 0;
-		while (argv[1][i] != '\0')
-			i++;
-		return i;
-	}());
+		size_t a = 0;
+		wcstombs_s<1024>(&a, input, argv[1], 1000);
+	}
 	uc_vector File;
 	unsigned int w, h = 0;
 	unsigned short ws, hs = 0;

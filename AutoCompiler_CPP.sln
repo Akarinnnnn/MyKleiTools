@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.421
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28917.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AutoPNG_win32", "AutoPNG_win32\AutoPNG_win32.vcxproj", "{6157E640-5758-4192-904E-638D419BD863}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "refer", "refer\refer.pyproj", "{F25D2283-4413-4A6C-9D09-CBF6B262C068}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "con_testapp", "con_testapp\con_testapp.vcxproj", "{6CB99F05-4599-4CF5-9947-0BA134CD0F37}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ktexlib_dymanic", "..\Shared\ktexlib_dymanic\ktexlib_dymanic.vcxproj", "{FC0F5B70-D97A-48E5-B2A3-22301EC90493}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,16 @@ Global
 		{6CB99F05-4599-4CF5-9947-0BA134CD0F37}.Release|x64.Build.0 = Release|x64
 		{6CB99F05-4599-4CF5-9947-0BA134CD0F37}.Release|x86.ActiveCfg = Release|Win32
 		{6CB99F05-4599-4CF5-9947-0BA134CD0F37}.Release|x86.Build.0 = Release|Win32
+		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Debug|x64.ActiveCfg = Debug|x64
+		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Debug|x64.Build.0 = Debug|x64
+		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Debug|x86.ActiveCfg = Debug|Win32
+		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Debug|x86.Build.0 = Debug|Win32
+		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Release|Any CPU.ActiveCfg = Release|Win32
+		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Release|x64.ActiveCfg = Release|x64
+		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Release|x64.Build.0 = Release|x64
+		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Release|x86.ActiveCfg = Release|Win32
+		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
