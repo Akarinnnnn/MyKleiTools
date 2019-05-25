@@ -71,12 +71,15 @@ std::wstring& localization::operator[](unsigned short i)
 	}
 	catch (const std::out_of_range& e)
 	{
-		cout << '\n' << endl;
+		wstring r1 = L"\n";
+		return  r1;
 	}
 	catch (const std::exception& e)
 	{
 		cerr << e.what() << endl;
 	}
+	wstring r1 = L"\n";
+	return r1;
 }
 
 
