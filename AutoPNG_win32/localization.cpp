@@ -1,3 +1,6 @@
+/****************************
+* Encoding: GB2312
+****************************/
 #include "pch.h"
 #include "localizition.h"
 #include <iostream>

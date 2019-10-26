@@ -1,4 +1,7 @@
-ï»¿// AutoPNG_win32.cpp : æ­¤æ–‡ä»¶åŒ…å« "main" å‡½æ•°ã€‚ç¨‹åºæ‰§è¡Œå°†åœ¨æ­¤å¤„å¼€å§‹å¹¶ç»“æŸã€‚
+/****************************
+* Encoding: GB2312
+****************************/
+// AutoPNG_win32.cpp : ´ËÎÄ¼ş°üº¬ "main" º¯Êı¡£³ÌĞòÖ´ĞĞ½«ÔÚ´Ë´¦¿ªÊ¼²¢½áÊø¡£
 //
 
 #include "pch.h"
@@ -7,22 +10,22 @@
 //STL
 #include <iostream>
 #include <regex>
-#include <filesystem>//MSVCç‰¹è‰²
+#include <filesystem>//MSVCÌØÉ«
 #include <thread>
 #include <atomic>
 #include <exception>
 #include <system_error>
 #include <mutex>
-//PNGå¤„ç†
+//PNG´¦Àí
 #include <lodepng.h>
 //Win32
 #ifdef _WIN32
 #include "windows.h"
 #endif
 #define MULTI_THREAD_KTEXCONOUTPUT
-#include "TEXFileOperation.h"
+#include "../library_collections/ktexlib_dymanic/TEXFileOperation.h"
 
-//å¯èƒ½çš„æ³¨å†Œè¡¨é¡¹: HKEY_CURRENT_USER\System\GameConfigStore\Children\2c1ae850-e27e-4f10-a985-2dd951d15ba4
+//¿ÉÄÜµÄ×¢²á±íÏî: HKEY_CURRENT_USER\System\GameConfigStore\Children\2c1ae850-e27e-4f10-a985-2dd951d15ba4
 //
 using namespace std;
 
@@ -35,7 +38,6 @@ namespace MAIN
 }
 void convert_func(vector<string>& str,unsigned int& i)
 {
-	string pngfile;
 	lodepng::State pngstate;
 	ktexlib::uc_vector pngfvec;
 	ktexlib::KTEXFileOperation::KTEX ktexop;
@@ -49,14 +51,14 @@ void convert_func(vector<string>& str,unsigned int& i)
 			str.shrink_to_fit();
 			break;
 		}
-		pngfile = str.back();
+		string& pngfile = str.back();
 		str.pop_back();
 		MAIN::strmutex.unlock();
 		ktexop.clear();
 		lodepng::load_file(pngfvec, pngfile);
 		unsigned int w, h = 0;
 		auto ret = lodepng::decode(rgba.data, w, h, pngstate, pngfvec);
-		//åˆ¤æ–­
+		//ÅĞ¶Ï
 		if (ret!=0)
 		{
 			cerr << lodepng_error_text(ret) << endl;
@@ -64,18 +66,18 @@ void convert_func(vector<string>& str,unsigned int& i)
 		}
 		if (w > USHRT_MAX || h > USHRT_MAX)
 			continue;
-		//èµ‹å€¼
+		//¸³Öµ
 		rgba.width = w;
 		rgba.height = h;
 		ktexop.output = filesystem::path(pngfile).replace_extension(".tex");
 		MAIN::con.lock();
 		wcout << ktexop.output << endl;
 		MAIN::con.unlock();
-		//è½¬æ¢
+		//×ª»»
 		ktexop.PushRGBA(rgba,1);
 		
 		ktexop.Convert();
-		//æ¸…ç†
+		//ÇåÀí
 		ktexop.clear();
 		rgba.data.clear();
 		pngfvec.clear();
@@ -88,23 +90,23 @@ void convert_func(vector<string>& str,unsigned int& i)
 int wmain(int argc,wchar_t* argv[])
  {
 	localization local;
-	////////////////////ä¹Ÿæ˜¯MSVCç‰¹è‰²/////////////////////////
+	////////////////////Ò²ÊÇMSVCÌØÉ«/////////////////////////
 	using namespace std::filesystem;
 	unsigned long buffiersize = MAX_PATH;
 	wstring modspath;
 	wchar_t GameBinPath[MAX_PATH]{ 0 };
-	bool æ¸…ç† = false;
+	bool ÇåÀí = false;
 	switch (argc)
 	{
 	case(1):
-		//Linuxç›´æ¥æŠŠcase(1)è¿™å—å»æ‰
+		//LinuxÖ±½Ó°Ñcase(1)Õâ¿éÈ¥µô
 		RegGetValueW(HKEY_CURRENT_USER, L"System\\GameConfigStore\\Children\\2c1ae850-e27e-4f10-a985-2dd951d15ba4", L"MatchedExeFullPath",
 			RRF_RT_ANY, NULL, GameBinPath, &buffiersize);
 		modspath = GameBinPath;
 		modspath += L"\\..\\..\\mods\\";
 		break;
 	case(2):
-		switch (argv[1][0])//å…¶å®æ˜¯æœ‰ç©ºå­å¯ä»¥é’»çš„ï¼Œæ¯”å¦‚è¯´txsbè¿›case tï¼Œcnmè¿›case c,ä¸è¿‡å¹¶æ²¡ä»€ä¹ˆdiaoç”¨å°±æ˜¯äº†
+		switch (argv[1][0])//ÆäÊµÊÇÓĞ¿Õ×Ó¿ÉÒÔ×êµÄ£¬±ÈÈçËµtxsb½øcase t£¬cnm½øcase c,²»¹ı²¢Ã»Ê²Ã´diaoÓÃ¾ÍÊÇÁË
 		{
 		case(L't'):
 			modspath = argv[0];
@@ -113,7 +115,7 @@ int wmain(int argc,wchar_t* argv[])
 			std::wcout << local[1] << endl
 				<< local[2] << endl;
 			std::getline(wcin, modspath);
-			æ¸…ç† = true;
+			ÇåÀí = true;
 			break;
 		default:
 			break;
@@ -126,8 +128,8 @@ int wmain(int argc,wchar_t* argv[])
 	}
 
 	path mods(modspath);
-	//æ¸…ç†
-	if (æ¸…ç†)
+	//ÇåÀí
+	if (ÇåÀí)
 	{
 		std::wcout << local[8] << endl;
 		for (auto dir : recursive_directory_iterator(mods))
@@ -174,7 +176,7 @@ int wmain(int argc,wchar_t* argv[])
 					catch (std::filesystem::filesystem_error& e)
 					{
 						int errcode = e.code().value();
-						if (errcode == 3);//å°±æ˜¯å•çº¯çš„æ‰¾ä¸åˆ°æ–‡ä»¶ 
+						if (errcode == 3);//¾ÍÊÇµ¥´¿µÄÕÒ²»µ½ÎÄ¼ş 
 						else
 							cerr << e.what() << endl;
 					}
@@ -190,7 +192,7 @@ int wmain(int argc,wchar_t* argv[])
 					}
 					catch (...)
 					{
-						wcerr << L"æœªçŸ¥é”™è¯¯" << endl;
+						wcerr << L"Î´Öª´íÎó" << endl;
 					}
 				}
 			}
@@ -217,7 +219,7 @@ int wmain(int argc,wchar_t* argv[])
 					catch (std::filesystem::filesystem_error& e)
 					{
 						int errcode = e.code().value();
-						if (errcode == 3)//å°±æ˜¯å•çº¯çš„æ‰¾ä¸åˆ°æ–‡ä»¶ 
+						if (errcode == 3)//¾ÍÊÇµ¥´¿µÄÕÒ²»µ½ÎÄ¼ş 
 						{
 						}
 						else

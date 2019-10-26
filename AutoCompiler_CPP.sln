@@ -13,11 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub", "GitHub", "{60B9EB
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mypng", "AutoCompiler_CPP\mypng.vcxproj", "{F1A6A308-F9D0-4078-904B-93C6E9684671}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "refer", "refer\refer.pyproj", "{F25D2283-4413-4A6C-9D09-CBF6B262C068}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "con_testapp", "con_testapp\con_testapp.vcxproj", "{6CB99F05-4599-4CF5-9947-0BA134CD0F37}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ktexlib_dymanic", "..\Shared\ktexlib_dymanic\ktexlib_dymanic.vcxproj", "{FC0F5B70-D97A-48E5-B2A3-22301EC90493}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CrashTexFinder", "CrashTexFinder\CrashTexFinder.vcxproj", "{79921AF4-7A70-4271-A442-F4E8950A44C1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ktexlib_dymanic", "library_collections\ktexlib_dymanic\ktexlib_dymanic.vcxproj", "{FC0F5B70-D97A-48E5-B2A3-22301EC90493}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,12 +49,6 @@ Global
 		{F1A6A308-F9D0-4078-904B-93C6E9684671}.Release|x64.Build.0 = Release|x64
 		{F1A6A308-F9D0-4078-904B-93C6E9684671}.Release|x86.ActiveCfg = Release|Win32
 		{F1A6A308-F9D0-4078-904B-93C6E9684671}.Release|x86.Build.0 = Release|Win32
-		{F25D2283-4413-4A6C-9D09-CBF6B262C068}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F25D2283-4413-4A6C-9D09-CBF6B262C068}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{F25D2283-4413-4A6C-9D09-CBF6B262C068}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F25D2283-4413-4A6C-9D09-CBF6B262C068}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F25D2283-4413-4A6C-9D09-CBF6B262C068}.Release|x64.ActiveCfg = Release|Any CPU
-		{F25D2283-4413-4A6C-9D09-CBF6B262C068}.Release|x86.ActiveCfg = Release|Any CPU
 		{6CB99F05-4599-4CF5-9947-0BA134CD0F37}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{6CB99F05-4599-4CF5-9947-0BA134CD0F37}.Debug|x64.ActiveCfg = Debug|x64
 		{6CB99F05-4599-4CF5-9947-0BA134CD0F37}.Debug|x64.Build.0 = Debug|x64
@@ -65,6 +59,16 @@ Global
 		{6CB99F05-4599-4CF5-9947-0BA134CD0F37}.Release|x64.Build.0 = Release|x64
 		{6CB99F05-4599-4CF5-9947-0BA134CD0F37}.Release|x86.ActiveCfg = Release|Win32
 		{6CB99F05-4599-4CF5-9947-0BA134CD0F37}.Release|x86.Build.0 = Release|Win32
+		{79921AF4-7A70-4271-A442-F4E8950A44C1}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{79921AF4-7A70-4271-A442-F4E8950A44C1}.Debug|x64.ActiveCfg = Debug|x64
+		{79921AF4-7A70-4271-A442-F4E8950A44C1}.Debug|x64.Build.0 = Debug|x64
+		{79921AF4-7A70-4271-A442-F4E8950A44C1}.Debug|x86.ActiveCfg = Debug|Win32
+		{79921AF4-7A70-4271-A442-F4E8950A44C1}.Debug|x86.Build.0 = Debug|Win32
+		{79921AF4-7A70-4271-A442-F4E8950A44C1}.Release|Any CPU.ActiveCfg = Release|Win32
+		{79921AF4-7A70-4271-A442-F4E8950A44C1}.Release|x64.ActiveCfg = Release|x64
+		{79921AF4-7A70-4271-A442-F4E8950A44C1}.Release|x64.Build.0 = Release|x64
+		{79921AF4-7A70-4271-A442-F4E8950A44C1}.Release|x86.ActiveCfg = Release|Win32
+		{79921AF4-7A70-4271-A442-F4E8950A44C1}.Release|x86.Build.0 = Release|Win32
 		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Debug|Any CPU.ActiveCfg = Debug|Win32
 		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Debug|x64.ActiveCfg = Debug|x64
 		{FC0F5B70-D97A-48E5-B2A3-22301EC90493}.Debug|x64.Build.0 = Debug|x64

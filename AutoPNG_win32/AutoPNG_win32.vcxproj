@@ -73,7 +73,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)附加依赖项\;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)附加依赖项\导入头\;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)Build\$(Configuration)_$(PlatformShortname)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -89,7 +89,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)附加依赖项\;$(IncludePath)</IncludePath>
-    <SourcePath>$(SolutionDir)\AutoCompiler_CPP\;$(SourcePath)</SourcePath>
     <OutDir>$(SolutionDir)Build\$(Configuration)_$(PlatformShortname)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -107,10 +106,10 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(ProjectDir)lib\$(Configuration)_$(PlatformShortName)\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ProjectDir)lib\$(Configuration)_$(PlatformShortName)\*\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy "$(ProjectDir)lib\$(Configuration)_$(PlatformShortName)\*.dll" "$(OutputPath)" /y /c /r /f</Command>
+      <Command>xcopy "$(ProjectDir)lib\$(Configuration)_$(PlatformShortName)\*\*.dll" "$(OutputPath)" /y /c /r /f</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

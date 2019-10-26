@@ -1,4 +1,7 @@
-ï»¿#include <iostream>
+/****************************
+* Encoding: GB2312
+****************************/
+#include <iostream>
 #include "../ktexlib/TEXFileOperation.h"
 
 int wmain()
@@ -8,7 +11,7 @@ int wmain()
 	wcin.imbue(locale("chs"));
 	wcout.imbue(locale("chs"));
 	wstring path;
-	wcout << L"KTEXè·¯å¾„:" << endl;
+	wcout << L"KTEXÂ·¾¶:" << endl;
 	getline(wcin, path);
 	KTEX test;
 	try
@@ -25,6 +28,6 @@ int wmain()
 	}
 	catch (...)
 	{
-		cout << "æœªçŸ¥é”™è¯¯" << endl;
+		cout << "Î´Öª´íÎó" << endl;
 	}
 }

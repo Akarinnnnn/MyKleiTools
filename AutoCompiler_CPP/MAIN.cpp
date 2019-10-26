@@ -1,4 +1,7 @@
-ï»¿// AutoCompiler_CPP.cpp : æ­¤æ–‡ä»¶åŒ…å« "main" å‡½æ•°ã€‚ç¨‹åºæ‰§è¡Œå°†åœ¨æ­¤å¤„å¼€å§‹å¹¶ç»“æŸã€‚
+/****************************
+* Encoding: GB2312
+****************************/
+// AutoCompiler_CPP.cpp : ´ËÎÄ¼ş°üº¬ "main" º¯Êı¡£³ÌĞòÖ´ĞĞ½«ÔÚ´Ë´¦¿ªÊ¼²¢½áÊø¡£
 //required lodepng
 
 #include "pch.h"
@@ -7,25 +10,19 @@
 #include "TEXFileOperation.h"
 #include "lodepng.h"
 
-//#define FUNCTEST//æµ‹è¯•å¼€å…³
+//#define FUNCTEST//²âÊÔ¿ª¹Ø
 using namespace std;
 using namespace ktexlib::KTEXFileOperation;
 
 #ifndef FUNCTEST
 int wmain(int argc, const wchar_t* argv[])
 {
-	if (MACROSETLOCALE)//CodePage:936
-	{
-		cout << "Warning: failed to set the codepage to 936, \nconsole outputs may garbled" << endl;
-	}
+	wcout.imbue(locale("chs"));
 	char input[1024] = { 0 };
-	{
-		size_t a = 0;
-		wcstombs_s<1024>(&a, input, argv[1], 1000);
-	}
+
 	uc_vector File;
-	unsigned int w, h = 0;
-	unsigned short ws, hs = 0;
+	unsigned int w = 0, h = 0;
+	unsigned short ws = 0, hs = 0;
 
 	KTEX ktex;
 	RGBAv2 img;
@@ -36,19 +33,26 @@ int wmain(int argc, const wchar_t* argv[])
 		{
 		case(2):
 			wcout << L"input: " << argv[1] << endl;
+			{
+				size_t a = 0;
+				wcstombs_s<1024>(&a, input, argv[1], 1000);
+			}
 			lodepng::load_file(File, input);
-			ktex.output = std::filesystem::path(argv[1]).filename().wstring();
+			ktex.output = std::filesystem::path(argv[1]).replace_extension(L".tex").wstring();
 			break;
 		case(3):
 			wcout << L"input: " << argv[1] << endl;
-			lodepng::load_file(File, input);
 			{
-				ktex.output = wstring(argv[2]);
-				break;
+				size_t a = 0;
+				wcstombs_s<1024>(&a, input, argv[1], 1000);
 			}
+			lodepng::load_file(File, input);
+			ktex.output = wstring(argv[2]);
+			break;
 		default:
 			cout << "Invalid argument.\nUsage: mypng PNG KTEX(Optional)" << endl << "Input filename to contiue" << endl;
 			cin >> input;
+			ktex.output = std::filesystem::path(input).replace_extension(L".tex").wstring();
 			break;
 		}
 		
@@ -58,8 +62,20 @@ int wmain(int argc, const wchar_t* argv[])
 		cout << e.what() << endl;
 		return 100;
 	}
+
+	if (!filesystem::exists(input))
+	{
+		cerr << "file not exist" << endl;
+		return 20;
+	}
+
 	wcout << L"output: " << ktex.output << endl;
 	lodepng::decode(img.data, w, h, pngstate, File);
+	if (pngstate.error != 0)
+	{
+		cerr << lodepng_error_text(pngstate.error) << endl;
+		return pngstate.error;
+	}
 	if (w > USHRT_MAX || h > USHRT_MAX)
 	{
 		return 999;

@@ -1,3 +1,6 @@
+/****************************
+* Encoding: GB2312
+****************************/
 #pragma once
 #include <map>
 #include <string>

@@ -1,3 +1,6 @@
+/****************************
+* Encoding: GB2312
+****************************/
 #pragma once
 #ifndef KTEX_COMMON
 #define KTEX_COMMON
